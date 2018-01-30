@@ -23,22 +23,22 @@
             <v-flex sm6 xs12>
               <v-subheader>Type</v-subheader>
               <v-radio-group v-model="type" :mandatory="false">
-                <v-radio label="Artists" value="artists" color="green"></v-radio>
                 <v-radio label="Tracks" value="tracks" color="green"></v-radio>
+                <v-radio label="Artists" value="artists" color="green"></v-radio>
               </v-radio-group>
             </v-flex>
             <v-flex sm6 xs12>
               <v-subheader>Time</v-subheader>
               <v-radio-group v-model="search.timeRange" :mandatory="false">
-                <v-radio label="Last Several Years" value="long_term" color="green"></v-radio>
-                <v-radio label="Last 6 Months" value="medium_term" color="green"></v-radio>
                 <v-radio label="Last Month" value="short_term" color="green"></v-radio>
+                <v-radio label="Last 6 Months" value="medium_term" color="green"></v-radio>
+                <v-radio label="Last Several Years" value="long_term" color="green"></v-radio>
               </v-radio-group>
             </v-flex>
             <v-flex xs12>
               <v-subheader># of Tracks</v-subheader>
               <v-flex xs9>
-                <v-slider color="green" v-bind:max="50" v-model="search.limit"></v-slider>
+                <v-slider color="green" :min="3" :max="50" v-model="search.limit"></v-slider>
               </v-flex>
               <v-flex xs1 style="margin-right:10px">
                 <v-text-field v-model="search.limit" type="number"></v-text-field>
@@ -148,8 +148,8 @@
       }
     },
     getData () {
-      this.search.type = this.type
       this.loading = true
+      this.search.type = this.type
       const query = '?time_range=' + this.search.timeRange + '&limit=' + this.search.limit
         axios.get('https://api.spotify.com/v1/me/top/' + this.search.type + query, {
           headers: {
@@ -206,7 +206,7 @@
       let time = ''
       if (this.search.timeRange === 'long_term') {
         time = 'Last Several Years'
-      } else if (this.search.timeRange === 'medium') {
+      } else if (this.search.timeRange === 'medium_term') {
         time = 'Last 6 Months'
       } else {
         time = 'Last Month'
@@ -233,11 +233,11 @@
         loading: true,
         topArtists: [],
         search: {
-          type: 'artists',
-          timeRange: 'medium_term',
+          type: 'tracks',
+          timeRange: 'short_term',
           limit: 20
         },
-        type: 'artists',
+        type: 'tracks',
         limit: 20,
         song: '',
         data: [],
@@ -264,13 +264,7 @@
         }).then((res) => {
           this.userData = res.data
         })
-        const musicData = axios.get('https://api.spotify.com/v1/me/top/' + this.search.type, {
-          headers: {
-            'Authorization': 'Bearer ' + this.accessToken
-          }
-        }).then((res) => {
-          this.data = res.data.items
-        })
+        const musicData = this.getData()
 
         Promise.all([userData, musicData])
           .then(() => {

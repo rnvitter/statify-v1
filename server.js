@@ -26,7 +26,7 @@ app.use(bodyParser.json())
 
 app.use(serveStatic(__dirname + "/dist"))
 
-var port = process.env.PORT || 8081
+var port = process.env.API_PORT || '8082'
 
 let redirect_uri = undefined
 let redirect_url
@@ -38,8 +38,8 @@ if (process.env.NODE_ENV === 'production') {
   var client_id = process.env.client_id
   var client_secret = process.env.client_secret
 } else {
-  redirect_uri = 'http://localhost:8081/callback/'
-  redirect_url = 'http://localhost:8080/'
+  redirect_uri = 'http://localhost:8082/callback/'
+  redirect_url = 'http://localhost:8081/?'
   var { client_id, client_secret } = require('./secrets')
 }
 
