@@ -26,7 +26,7 @@ app.use(bodyParser.json())
 
 app.use(serveStatic(__dirname + "/dist"))
 
-var port = process.env.API_PORT || '8082'
+var port = process.env.PORT || '8082'
 
 let redirect_uri = undefined
 let redirect_url
