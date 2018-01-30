@@ -32,8 +32,9 @@ let redirect_uri = undefined
 let redirect_url
 
 if (process.env.NODE_ENV === 'production') {
-  redirect_uri = 'https://statify-beta.herokuapp.com/callback/'
-  redirect_url = 'https://statify-beta.herokuapp.com/?'
+  var redirect = process.env.redirect
+  redirect_uri = redirect + 'callback/'
+  redirect_url = redirect + '?'
   var client_id = process.env.client_id
   var client_secret = process.env.client_secret
 } else {
