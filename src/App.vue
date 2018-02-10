@@ -21,3 +21,31 @@
     components
   }
 </script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,900');
+
+  html, body {
+    font-family: 'Roboto', sans-serif;
+  }
+
+  h3 {
+    color: #1db954;
+    font-weight: 900;
+    font-size: 20px;
+  }
+
+  h4 {
+    color: white;
+    text-shadow: 2px 2px 5px black;
+    font-weight: 300;
+    font-size: 24px;
+  }
+
+  h5 {
+    color: white;
+    text-shadow: 2px 2px 5px black;
+    font-weight: 300;
+    font-size: 20px;
+  }
+</style>
