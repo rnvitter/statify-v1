@@ -9,7 +9,7 @@
           Error in Creating Playlist: {{ errors }}
         </v-alert>
         <h3 class="header" slot="header">
-          <div style="margin-left:20px; position:absolute; top:10px;">Statify</div>
+          <div style="position:absolute; top:10px;">Statify</div>
         </h3>
         <v-flex class="welcome-user">
           <img class="profile-pic" :src="userData.images[0].url" v-if="userData.images[0]"/>

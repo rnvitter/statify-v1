@@ -116,8 +116,8 @@
 <style>
 .albums {
   margin-top: 10px;
-  -webkit-animation: 4s ease 0s normal forwards 0 album-fade-in;
-  animation: 4s ease 0s normal forwards 1 album-fade-in;
+  -webkit-animation: 2s ease 0s normal forwards 0 album-fade-in;
+  animation: 2s ease 0s normal forwards 1 album-fade-in;
 }
 @-webkit-keyframes album-fade-in {
   0% { opacity: 0; }
