@@ -1,7 +1,6 @@
 <template>
   <div class="login">
     <div class="title-wrapper">
-      <icon class="spotify-icon" name="spotify"></icon>
       <h2 class="title">Statify <span class="separator">|</span></h2>
       <v-btn class="login-btn" @click="login()" flat>Login</v-btn>
     </div>

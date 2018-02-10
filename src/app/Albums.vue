@@ -2,7 +2,7 @@
   <div v-if="data.length > 0" class="albums" :loading="loading">
     <v-container fluid grid-list-md class="grey lighten-4" v-if="!loading">
       <v-layout row wrap>
-        <v-flex xs4 lg6 v-for="(card, index) in data" :key="card.title">
+        <v-flex xs12 sm6 md4 lg3 v-for="(card, index) in data" :key="card.title">
           <v-card style="width:100%">
             <v-card-media
               v-if="search.type === 'artists' ? card.images : card.album && card.album.images"
@@ -129,7 +129,6 @@
   100% { opacity: 1; }
 }
 .rank {
-  color: black;
   font-size: 20px;
   font-weight: 900;
   background: #1db954;

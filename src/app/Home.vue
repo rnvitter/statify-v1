@@ -9,7 +9,6 @@
           Error in Creating Playlist: {{ errors }}
         </v-alert>
         <h3 class="header" slot="header">
-          <icon name="spotify"></icon>
           <div style="margin-left:20px; position:absolute; top:10px;">Statify</div>
         </h3>
         <v-flex class="welcome-user">
@@ -248,19 +247,6 @@
     .toggles {
       margin: 12px;
     }
-
-  .fa-icon {
-    width: auto;
-    height: 1em; /* or any other relative font sizes */
-
-    /* You would have to include the following two lines to make this work in Safari */
-    max-width: 100%;
-    max-height: 100%;
-  }
-
-  .accent--text {
-    color: #1db954 !important;
-  }
 
   @media only screen and (max-width: 560px) {
     .profile-pic {
