@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-expansion-panel v-if="accessToken">
+    <v-expansion-panel v-if="accessToken && userData">
       <v-expansion-panel-content>
         <v-alert color="success" icon="success" dismissible v-model="successAlert">
           Playlist Created
@@ -8,11 +8,11 @@
         <v-alert color="warning" icon="warning" dismissible v-model="failureAlert">
           Error in Creating Playlist: {{ errors }}
         </v-alert>
-        <h4 class="header" slot="header">
+        <h3 class="header" slot="header">
           <icon name="spotify"></icon>
           <div style="margin-left:20px; position:absolute; top:10px;">Statify</div>
-        </h4>
-        <v-flex class="welcome-user" v-if="userData">
+        </h3>
+        <v-flex class="welcome-user">
           <img class="profile-pic" :src="userData.images[0].url" v-if="userData.images[0]"/>
           <h4 class="username">Welcome, {{ userData.display_name }}
             <span class="separator"> | </span>
@@ -47,64 +47,16 @@
             <v-flex>
               <v-btn @click="getData">Load</v-btn>
               <v-btn @click="createPlaylist" v-if="search.type === 'tracks'">Create Playlist</v-btn>
+              <top-20-button :username="userData.display_name"></top-20-button>
             </v-flex>
         </v-layout>
       </v-expansion-panel-content>
     </v-expansion-panel>
-    <div class="albums" v-if="accessToken" :loading="loading">
-      <template v-for="(item, index) in data">
-        <template v-if="search.type === 'artists' && !loading">
-          <v-flex style="display: inline-block" lg3 md4 sm6 xs12>
-            <div class="album-container">
-              <img
-                :class="getAlbumClasses"
-                @click="playPreview(item.preview_url)"
-                :src="item.images[0].url"
-                :alt="item.name"
-                style="width:100%"/>
-              <icon
-                class="play-icon overlay"
-                name="play">
-              </icon>
-              <div class="label overlay">
-                <h4>{{ item.name }}</h4>
-              </div>
-              <div class="label rating-overlay">
-                <h2>{{ index + 1 }}</h2>
-              </div>
-            </div>
-          </v-flex>
-        </template>
-        <template v-else-if="search.type === 'tracks' && !loading">
-          <v-flex style="display: inline-block" lg3 md4 sm6 xs12>
-            <div class="album-container">
-              <img
-                :class="getAlbumClasses"
-                @click="playPreview(item.preview_url)"
-                :src="item.album.images[0].url"
-                :alt="item.name"
-                style="width:100%"/>
-              <icon
-                class="play-icon overlay"
-                name="play">
-              </icon>
-              <div class="label overlay">
-                <h4>{{ item.name }}</h4>
-                <h4>{{ item.artists[0].name }}</h4>
-                <h4>{{ item.album.name }}</h4>
-              </div>
-              <div class="label rating-overlay">
-                <h2>{{ index + 1 }}</h2>
-              </div>
-            </div>
-          </v-flex>
-        </template>
-      </template>
-      <audio ref="audio" @timeupdate="audioUpdate"></audio>
-      <div class="animation-wrapper">
-        <AudioAnimation v-if="audioPlaying"></AudioAnimation>
-      </div>
-    </div>
+
+    <albums v-if="accessToken" @saveSong="saveSong($event)"
+      :data="data" :search="search" :type="type">
+    </albums>
+
     <login v-else></login>
   </div>
 </template>
@@ -113,39 +65,22 @@
   import SpotifyService from '../services/spotifyService'
   import axios from 'axios'
   import _ from 'lodash'
-  import AudioAnimation from '../components/AudioAnimation'
 
-  import login from './Login.vue'
+  import login from './Login'
+  import Top20Button from './Top20Button'
+  import Albums from './Albums'
 
   const name = 'home'
 
   const components = {
     login,
-    AudioAnimation
+    Top20Button,
+    Albums
   }
 
   const methods = {
     logout () {
-      SpotifyService.logout()
-    },
-    playPreview (song) {
-      let audio = document.querySelector('audio')
-      if (audio.src === '') {
-        audio.src = song
-        audio.play()
-      } else if (song !== audio.src) {
-        audio.pause()
-        audio.currentTime = 0
-        audio.src = song
-        audio.play()
-      } else if (song === audio.src) {
-        audio.pause()
-        audio.currentTime = 0
-        audio.src = ''
-      } else {
-        audio.pause()
-        audio.currentTime = 0
-      }
+      window.location.href = process.env.API_URL
     },
     getData () {
       this.loading = true
@@ -161,6 +96,7 @@
             this.songs.push(song.uri)
           })
           this.loading = false
+          console.log(this.data)
         })
     },
     createPlaylist () {
@@ -212,13 +148,6 @@
         time = 'Last Month'
       }
       return 'Top ' + this.search.limit + ' Songs Over the ' + time
-    },
-    getAlbumClasses () {
-      if (this.type === 'artists') {
-        return 'album tint'
-      } else if (this.type === 'tracks') {
-        return 'album tint song'
-      }
     }
   }
 
@@ -239,14 +168,13 @@
         },
         type: 'tracks',
         limit: 20,
-        song: '',
         data: [],
         songs: [],
+        top20: [],
         userData: undefined,
         errors: '',
         successAlert: false,
-        failureAlert: false,
-        audioPlaying: false
+        failureAlert: false
       }
     },
     beforeMount () {
@@ -299,6 +227,7 @@
       .username {
         margin-top: 15px;
         margin-left: 20px;
+        text-shadow: none;
         font-size: 22px;
         font-weight: 600;
         color: #1db954;
@@ -319,63 +248,6 @@
     .toggles {
       margin: 12px;
     }
-      .albums {
-        margin-top: 10px;
-        -webkit-animation: 4s ease 0s normal forwards 0 album-fade-in;
-        animation: 4s ease 0s normal forwards 1 album-fade-in;
-      }
-      @-webkit-keyframes album-fade-in {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
-      }
-
-      @keyframes album-fade-in {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
-      }
-        .album-container {
-          position: relative;
-          text-align: center;
-          padding: 12px 12px 3px 12px;
-        }
-          .label {
-            color: white;
-          }
-          .play-icon {
-            z-index: 2;
-            font-size: 200px;
-            opacity: 0;
-            color: #d3d3d3;
-          }
-          .overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%);
-                    transform: translate(-50%, -50%);
-            width: 90%;
-          }
-          .rating-overlay {
-            position: absolute;
-            top: 1%;
-            left: 6%;
-            font-size: 32px;
-            opacity: 0.5;
-          }
-          .tint {
-            -webkit-filter: grayscale; /*sepia, hue-rotate, invert....*/
-            -webkit-filter: brightness(70%);
-          }
-          .song:hover ~ .play-icon {
-            opacity: 0.7;
-            -webkit-transition: 0.7s;
-            transition: 0.7s;
-          }
-          .song:hover ~ .audio-overlay {
-            opacity: 0.7;
-            -webkit-transition: 0.7s;
-            transition: 0.7s;
-          }
 
   .fa-icon {
     width: auto;
