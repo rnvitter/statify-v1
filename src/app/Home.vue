@@ -127,12 +127,10 @@
         })
     },
     saveSong (id) {
-      console.log(id)
       const ids = {ids:[id]}
       axios.put('https://api.spotify.com/v1/me/tracks/?ids=', ids, {
-        headers: {'Authorization': 'Bearer ' + this.accessToken}
+        headers: { 'Authorization': 'Bearer ' + this.accessToken }
       }).then((res) => console.log(res))
-
     }
   }
 
