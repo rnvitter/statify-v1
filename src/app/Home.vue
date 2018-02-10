@@ -262,14 +262,6 @@
     color: #1db954 !important;
   }
 
-  .animation-wrapper {
-    position: fixed;
-    left: 0px;
-    bottom: 0px;
-    z-index: 999;
-    margin-left: 0.7vw;
-  }
-
   @media only screen and (max-width: 560px) {
     .profile-pic {
       width: 80px;

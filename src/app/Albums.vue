@@ -12,14 +12,17 @@
               <v-container fill-height fluid>
                 <v-layout fill-height>
                   <v-flex xs12 align-end flexbox>
-                    <span v-if="search.type === 'artists'">
+                    <span style="z-index:3" v-if="search.type === 'artists'">
                       <h4>{{ card.name }}</h4>
                     </span>
-                    <span v-else>
+                    <span style="z-index:3" v-else>
                       <h5>{{ card.name }}</h5>
                       <h5 v-if="card.artists">{{ card.artists[0].name }}</h5>
                       <h5>{{ card.album.name }}</h5>
                     </span>
+                    <div class="animation-wrapper">
+                      <AudioAnimation v-if="audioPlaying && card.preview_url === song"></AudioAnimation>
+                    </div>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -42,9 +45,6 @@
       </v-layout>
     </v-container>
     <audio ref="audio" @timeupdate="audioUpdate"></audio>
-    <div class="animation-wrapper">
-      <AudioAnimation v-if="audioPlaying"></AudioAnimation>
-    </div>
   </div>
 </template>
 
@@ -66,6 +66,9 @@
 
   const methods = {
     playPreview (song) {
+      // for v-if on animation
+      this.song = song
+
       let audio = document.querySelector('audio')
       if (audio.src === '') {
         audio.src = song
@@ -138,5 +141,12 @@
   margin-right: 5px;
   text-align: center;
   width: 1.6em;
+}
+.animation-wrapper {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  z-index: 2;
+  margin-left: 0.7vw;
 }
 </style>
