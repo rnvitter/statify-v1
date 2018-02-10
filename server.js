@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === 'production') {
   var client_secret = process.env.client_secret
 } else {
   redirect_uri = 'http://localhost:8082/callback/'
-  redirect_url = 'http://localhost:8081/?'
+  redirect_url = 'http://localhost:8081/'
   var { client_id, client_secret } = require('./secrets')
 }
 
@@ -51,7 +51,7 @@ app.get('/login', function (req, res) {
   var state = generateRandomString(16)
   res.cookie(stateKey, state)
 
-  var scope = 'user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private'
+  var scope = 'user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private user-library-modify'
   res.send('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       client_id: client_id,
@@ -102,7 +102,6 @@ app.get('/callback', function(req, res) {
         request.get(options, function(error, response, body) {
           // console.log(body);
         })
-        console.log(redirect_url)
         res.redirect(redirect_url +
           querystring.stringify({
             access_token: access_token,
