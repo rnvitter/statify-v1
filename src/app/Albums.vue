@@ -34,15 +34,30 @@
             <v-card-actions class="white">
               <div class="rank">{{ index + 1 }}</div>
               <v-spacer></v-spacer>
-              <v-btn icon @click="playPreview(card.preview_url)">
+              <v-btn icon @click="getTopTrackIndex('prev', card.id)" v-if="type === 'artists'"
+                :disabled="topTracks.length === 0 || !topTracks[0].artists.some(e => e.id === card.id)">
+                <v-icon>skip_previous</v-icon>
+              </v-btn>
+              <v-btn icon @click="playPreview(card.preview_url, card.id)" v-if="type === 'tracks'">
                 <v-icon>play_arrow</v-icon>
               </v-btn>
-              <v-btn icon @click="saveTrack(card.id)">
+              <v-btn icon @click="getTopTrackIndex(null, card.id)" v-else
+                :disabled="topTracks.length === 0 || !topTracks[0].artists.some(e => e.id === card.id)">
+                <v-icon>play_arrow</v-icon>
+              </v-btn>
+              <v-btn icon @click="getTopTrackIndex('next', card.id)" v-if="type === 'artists'"
+                :disabled="topTracks.length === 0 || !topTracks[0].artists.some(e => e.id === card.id)">
+                <v-icon>skip_next</v-icon>
+              </v-btn>
+              <v-btn icon @click="saveTrack(card.id)" v-if="type === 'tracks'">
                 <v-icon>add</v-icon>
               </v-btn>
-              <v-btn icon>
-                <v-icon>share</v-icon>
-              </v-btn>
+              <v-tooltip open-delay="500" bottom v-if="type === 'artists'">
+                <v-btn icon @click="getArtistsTopTracks(card.id)" slot="activator">
+                  <v-icon>format_list_numbered</v-icon>
+                </v-btn>
+                <span>Get Artist's Top Tracks</span>
+              </v-tooltip>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -68,9 +83,9 @@
   }
 
   const methods = {
-    playPreview (song) {
+    playPreview (song, id) {
       // for v-if on animation
-      this.song = song
+      this.song = id
 
       let audio = document.querySelector('audio')
       if (audio.src === '') {
@@ -121,8 +136,43 @@
           })
         }
       })
+    },
+    getArtistsTopTracks (id) {
+      this.topTrackIndex = 0
+      axios.get(`https://api.spotify.com/v1/artists/${id}/top-tracks?country=US`, {
+        headers: { 'Authorization': 'Bearer ' + this.accessToken }
+      }).then((res) => {
+        if (res.data.tracks.length >= 5) {
+          this.topTracks = res.data.tracks.slice(0, 5)
+        } else {
+          this.topTracks = res.data.tracks.slice(0, (res.data.tracks.length - 1))
+        }
+      })
+    },
+    getTopTrackIndex (direction, id) {
+      if (direction === 'next') {
+        if (this.topTrackIndex < (this.topTracks.length - 1)) {
+          this.topTrackIndex = this.topTrackIndex + 1
+        } else {
+          this.topTrackIndex = 0
+        }
+      }
+      if (direction === 'prev') {
+        if (this.topTrackIndex > 0) {
+          this.topTrackIndex = this.topTrackIndex - 1
+        } else {
+          this.topTrackIndex = 4
+        }
+      }
+      this.updateCurrentTrackStyle()
+      this.playPreview(this.topTracks[this.topTrackIndex].preview_url, id)
+    },
+    updateCurrentTrackStyle () {
+      document.querySelectorAll('.top-tracks').forEach(el => el.style.opacity = 0.5)
+      document.querySelectorAll('.top-tracks')[this.topTrackIndex].style.opacity = 1
     }
   }
+
 
   export default {
     name,
@@ -142,6 +192,8 @@
           alertIcon: null,
           alertMessage: null
         },
+        topTracks: [],
+        topTrackIndex: 0
       }
     },
     beforeMount () {
