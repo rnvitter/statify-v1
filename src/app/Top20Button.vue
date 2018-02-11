@@ -50,6 +50,11 @@
   }
 
   const methods = {
+    ...mapActions([
+      'savetop20Data',
+      'saveTop20Username',
+      'saveTop20DialogState'
+    ]),
     getTop20Ids () {
       this.showTop20Preview = true
       this.loading = true

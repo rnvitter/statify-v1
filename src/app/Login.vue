@@ -9,6 +9,8 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
+
   import SpotifyService from '../services/spotifyService'
   import AudioAnimation from '../components/AudioAnimation'
 
@@ -19,6 +21,11 @@
   }
 
   const methods = {
+    ...mapActions([
+      'savetop20Data',
+      'saveTop20Username',
+      'saveTop20DialogState'
+    ]),
     login () {
       SpotifyService.login()
         .then((res) => {
@@ -30,7 +37,15 @@
   export default {
     name,
     methods,
-    components
+    components,
+    beforeMount () {
+      if (this.$route.query.showTop20Preview) {
+        this.savetop20Data(this.$route.query.data)
+        this.saveTop20Username(this.$route.query.username)
+        this.saveTop20DialogState(this.$route.query.showTop20Preview)
+        console.log(this.$store)
+      }
+    }
   }
 </script>
 
