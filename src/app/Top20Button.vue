@@ -25,10 +25,14 @@
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex'
+
   import axios from 'axios'
   import _ from 'lodash'
 
   import Albums from './Albums'
+
+  import { BASE_URL } from '../constants'
 
   const name = 'Top20Button'
 
@@ -60,20 +64,43 @@
             ids.push(song.id)
           })
           this.top20Ids = ids.toString()
-          this.encodedIds = btoa(this.top20Ids)
           this.getTop20Data()
         })
     },
     getTop20Data () {
-        axios.get('https://api.spotify.com/v1/tracks/?ids=' + this.top20Ids, {
-          headers: {
-            'Authorization': 'Bearer ' + this.accessToken
-          }
-        }).then((res) => {
-          console.log(res.data.tracks)
-          this.top20 = res.data.tracks
-        })
+      axios.get('https://api.spotify.com/v1/tracks/?ids=' + this.top20Ids, {
+        headers: {
+          'Authorization': 'Bearer ' + this.accessToken
+        }
+      }).then((res) => {
+        console.log(res.data.tracks)
+        this.top20 = res.data.tracks
+      })
+    },
+    getShareUrl () {
+      const data = 'data=' + btoa(this.top20Ids)
+      const user = 'username=' + btoa(this.username)
+      const show = 'showTop20Preview=true'
+      const url = BASE_URL + '?' + show + '&' + data + '&' + user
+      console.log(url)
+    },
+    clearTop20 () {
+      this.savetop20Data(null)
+      this.saveTop20Username(null)
+      this.saveTop20DialogState(null)
+    },
+    hideTop20 () {
+      this.showTop20Preview = false
+      this.clearTop20()
     }
+  }
+
+  const computed = {
+    ...mapGetters([
+      'top20Data',
+      'top20Username',
+      'top20DialogState'
+    ])
   }
 
   export default {
@@ -81,6 +108,7 @@
     props,
     components,
     methods,
+    computed,
     data () {
       return {
         showTop20Preview: false,
@@ -99,10 +127,15 @@
       }
     },
     beforeMount () {
-      if (process.env.NODE_ENV === 'production') {
-        this.accessToken = window.location.href.split('=')[1]
+      this.accessToken = this.$route.query.access_token
+      this.displayName = atob(this.top20Username) || this.username
+
+      if (this.top20DialogState === 'true') {
+        this.showTop20Preview = true
+        this.top20Ids = atob(this.top20Data)
+        this.getTop20Ids()
       } else {
-        this.accessToken = this.$route.path.split('=')[1]
+        this.showTop20Preview = false
       }
     }
   }
