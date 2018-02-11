@@ -2,26 +2,17 @@
   <span>
     <v-btn @click="getTop20Ids" v-if="search.type === 'tracks'">Share Your Top 20</v-btn>
 
-    <v-dialog v-model="showTop20Preview" fullscreen transition="dialog-bottom-transition" :overlay=false>
-
-      <div
-        id="top20"
-        style="margin: auto;"
-        class="grey lighten-3"
-      >
+    <v-dialog v-model="showTop20Preview" fullscreen>
+      <div id="top20" style="margin: auto;" class="grey lighten-3">
         <v-toolbar color="white">
           <v-toolbar-title class="green--text">
-              {{ username }}'s Top 20 ({{ timePeriod[search.timeRange] }})
+              {{ displayName }}'s Top 20 ({{ timePeriod[search.timeRange] }})
           </v-toolbar-title>
           <v-spacer></v-spacer>
-            <v-btn style="color:#1db954" flat @click.native="showTop20Preview = false">Share</v-btn>
-            <v-btn style="color:#1db954" flat @click.native="showTop20Preview = false">Close</v-btn>
+          <v-btn style="color:#1db954" flat @click="getShareUrl">Share</v-btn>
+          <v-btn style="color:#1db954" flat @click.native="hideTop20">Discover Your Top 20</v-btn>
         </v-toolbar>
-        <v-container
-          fluid
-          style="min-height: 0;"
-          grid-list-lg
-        >
+        <v-container fluid style="min-height:0;" grid-list-lg>
           <v-layout row wrap>
             <v-card>
               <albums style="margin-top:0" :data="top20" :search="search" type="tracks"></albums>

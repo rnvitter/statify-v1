@@ -46,15 +46,14 @@
             <v-flex>
               <v-btn @click="getData">Load</v-btn>
               <v-btn @click="createPlaylist" v-if="search.type === 'tracks'">Create Playlist</v-btn>
+              <v-spacer></v-spacer>
               <top-20-button :username="userData.display_name"></top-20-button>
             </v-flex>
         </v-layout>
       </v-expansion-panel-content>
     </v-expansion-panel>
 
-    <albums v-if="accessToken" @saveSong="saveSong($event)"
-      :data="data" :search="search" :type="type">
-    </albums>
+    <albums v-if="accessToken" :data="data" :search="search" :type="type"></albums>
 
     <login v-else></login>
   </div>
@@ -81,10 +80,9 @@
 
   const methods = {
     logout () {
-      window.location.href = process.env.API_URL
+      window.location.href = BASE_URL
     },
     getData () {
-      this.loading = true
       this.search.type = this.type
       const query = '?time_range=' + this.search.timeRange + '&limit=' + this.search.limit
         axios.get('https://api.spotify.com/v1/me/top/' + this.search.type + query, {
@@ -96,7 +94,6 @@
           _.forEach(res.data.items, song => {
             this.songs.push(song.uri)
           })
-          this.loading = false
           console.log(this.data)
         })
     },
@@ -127,12 +124,6 @@
             this.errors = err
           })
         })
-    },
-    saveSong (id) {
-      const ids = {ids:[id]}
-      axios.put('https://api.spotify.com/v1/me/tracks/?ids=', ids, {
-        headers: { 'Authorization': 'Bearer ' + this.accessToken }
-      }).then((res) => console.log(res))
     }
   }
 
@@ -158,7 +149,6 @@
     data () {
       return {
         accessToken: '',
-        loading: true,
         topArtists: [],
         search: {
           type: 'tracks',
@@ -190,9 +180,6 @@
         const musicData = this.getData()
 
         Promise.all([userData, musicData])
-          .then(() => {
-            this.loading = false
-          })
       }
     }
   }
