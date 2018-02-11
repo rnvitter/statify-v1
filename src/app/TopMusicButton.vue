@@ -1,0 +1,187 @@
+<template>
+  <span>
+    <v-btn @click.prevent="showTopMusicPreview = true" v-if="type === 'tracks'" class="fr">
+      Share Your Top {{ limit }} {{ type }}
+    </v-btn>
+
+    <v-dialog v-model="showTopMusicPreview" fullscreen v-if="topMusicUsername">
+      <div id="topMusic" style="margin: auto;" class="grey lighten-3">
+        <v-toolbar color="white">
+          <v-toolbar-title class="green--text">
+              {{ displayName }}'s Top {{ limit }} ({{ timePeriod[timeRange] }})
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn style="color:#1db954" flat @click.native="hideTopMusic">Discover Your Top Songs and Arists</v-btn>
+        </v-toolbar>
+        <v-container fluid style="min-height:0;" grid-list-lg>
+          <v-layout row wrap>
+            <v-card>
+              <albums style="margin-top:0" :data="topMusic"
+                :timeRange="timeRange" :limit="limit" type="tracks">
+              </albums>
+            </v-card>
+          </v-layout>
+        </v-container>
+      </div>
+    </v-dialog>
+
+    <v-dialog v-model="showTopMusicPreview" max-width="400" v-else>
+      <v-card>
+        <v-alert v-model="successAlert" dismissible
+          color="success" icon="check_circle">
+          Link Copied to Clipboard
+        </v-alert>
+        <v-flex xs12>
+          <v-flex xs2>
+            <v-btn flat icon style="color:#1db954; margin-top:20px" @click="getTopMusicIds">
+              <v-icon>cached</v-icon>
+            </v-btn>
+          </v-flex>
+          <v-flex xs10>
+            <v-text-field
+              id="share-link"
+              name="share-link"
+              color="green"
+              style="margin:10px 30px 0 30px;"
+              label="<== Click To Get Link"
+              v-model="shareLink">
+            </v-text-field>
+          </v-flex>
+          <v-flex xs2>
+            <v-btn flat icon style="color:#1db954; margin-top:20px" @click="copyLink">
+              <v-icon>content_copy</v-icon>
+            </v-btn>
+          </v-flex>
+        </v-flex>
+        <v-flex xs12>
+          <p style="margin:0 20px 10px 20px;">
+            Copy this link to share your top {{ limit }} {{ type }} of the
+            {{ timePeriod[timeRange] }} with your friends
+          </p>
+        </v-flex>
+      </v-card>
+    </v-dialog>
+  </span>
+</template>
+
+<script>
+  import { mapGetters, mapActions } from 'vuex'
+
+  import axios from 'axios'
+  import _ from 'lodash'
+
+  import Albums from './Albums'
+
+  import { BASE_URL } from '../constants'
+
+  const name = 'TopMusicButton'
+
+  const props = {
+    username: { type: String, required: true },
+    type: { type: String, required: true },
+    timeRange: { type: String, required: true },
+    limit: { type: Number, required: true }
+  }
+
+  const components = {
+    Albums
+  }
+
+  const methods = {
+    ...mapActions([
+      'savetopMusicData',
+      'savetopMusicUsername',
+      'savetopMusicDialogState'
+    ]),
+    getTopMusicIds () {
+      this.loading = true
+      this.shareLink = null
+      const query = '?time_range=' + this.timeRange + '&limit=' + this.limit
+        axios.get('https://api.spotify.com/v1/me/top/' + this.type + query, {
+          headers: {
+            'Authorization': 'Bearer ' + this.accessToken
+          }
+        }).then((res) => {
+          const ids = []
+          _.forEach(res.data.items, song => {
+            ids.push(song.id)
+          })
+          this.topMusicIds = ids.toString()
+          this.getTopMusicData()
+        })
+    },
+    getTopMusicData () {
+      axios.get('https://api.spotify.com/v1/tracks/?ids=' + this.topMusicIds, {
+        headers: {
+          'Authorization': 'Bearer ' + this.accessToken
+        }
+      }).then((res) => {
+        this.topMusic = res.data.tracks
+        this.getShareLink()
+      })
+    },
+    clearTopMusic () {
+      this.savetopMusicData(null)
+      this.savetopMusicUsername(null)
+      this.savetopMusicDialogState(null)
+    },
+    hideTopMusic () {
+      this.showTopMusicPreview = false
+      this.clearTopMusic()
+    },
+    getShareLink () {
+      const data = 'data=' + btoa(this.topMusicIds)
+      const user = 'username=' + btoa(this.username)
+      const show = 'showTopMusicPreview=true'
+      this.shareLink = BASE_URL + '?' + show + '&' + data + '&' + user
+    },
+    copyLink () {
+      this.$copyText(this.shareLink).then((e) => {
+        this.successAlert = true
+      })
+    }
+  }
+
+  const computed = {
+    ...mapGetters([
+      'topMusicData',
+      'topMusicUsername',
+      'topMusicDialogState'
+    ])
+  }
+
+  export default {
+    name,
+    props,
+    components,
+    methods,
+    computed,
+    data () {
+      return {
+        showTopMusicPreview: false,
+        topMusicIds: [],
+        topMusic: [],
+        timePeriod: {
+          'short_term': 'Last Month',
+          'medium_term': 'Last 6 Months',
+          'long_term': 'Last Several Years'
+        },
+        shareLink: null,
+        successAlert: false
+      }
+    },
+    beforeMount () {
+      this.accessToken = this.$route.query.access_token
+      this.displayName = atob(this.topMusicUsername) || this.username
+      console.log(this.topMusicDialogState)
+      if (this.topMusicDialogState === 'true') {
+        console.log('true')
+        this.showTopMusicPreview = true
+        this.topMusicIds = atob(this.topMusicData)
+        this.getTopMusicIds()
+      } else {
+        this.showTopMusicPreview = false
+      }
+    }
+  }
+</script>
