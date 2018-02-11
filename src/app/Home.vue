@@ -184,6 +184,7 @@
           this.userData = res.data
         }).catch((res) => {
           this.logout()
+          this.tokenAlert = true
         })
         const musicData = this.getData()
 
