@@ -109,6 +109,9 @@
         loading: false,
         accessToken: ''
       }
+    },
+    beforeMount () {
+      this.accessToken = this.$route.query.access_token
     }
   }
 </script>

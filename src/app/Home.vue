@@ -69,6 +69,8 @@
   import Top20Button from './Top20Button'
   import Albums from './Albums'
 
+  import { BASE_URL } from '../constants'
+
   const name = 'home'
 
   const components = {
@@ -175,11 +177,7 @@
       }
     },
     beforeMount () {
-      if (process.env.NODE_ENV === 'production') {
-        this.accessToken = window.location.href.split('=')[1]
-      } else {
-        this.accessToken = this.$route.path.split('=')[1]
-      }
+      this.accessToken = this.$route.query.access_token
 
       if (this.accessToken) {
         const userData = axios.get('https://api.spotify.com/v1/me', {

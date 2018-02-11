@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === 'production') {
   var client_secret = process.env.client_secret
 } else {
   redirect_uri = 'http://localhost:8082/callback/'
-  redirect_url = 'http://localhost:8081/'
+  redirect_url = 'http://localhost:8081/?'
   var { client_id, client_secret } = require('./secrets')
 }
 
