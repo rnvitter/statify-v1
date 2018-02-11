@@ -95,16 +95,29 @@
         this.audioPlaying = false
       }
     },
-    hasTrack (id) {
+    saveTrack (id) {
+      this.addSong = id
       axios.get('https://api.spotify.com/v1/me/tracks/contains?ids=' + id, {
         headers: { 'Authorization': 'Bearer ' + this.accessToken }
-      }).then((res) => res.data[0])
-    },
-    saveTrack (id) {
-      const ids = {ids:[id]}
-      axios.put('https://api.spotify.com/v1/me/tracks/?ids=', ids, {
-        headers: { 'Authorization': 'Bearer ' + this.accessToken }
-      }).then((res) => console.log(res))
+      }).then((res) => {
+        console.log(res.data[0])
+        if (res.data[0]) {
+          this.alert.alertType = 'info'
+          this.alert.alertIcon = 'info'
+          this.alert.alertMessage = 'Song already in library'
+          this.alert.active = true
+        } else {
+          const ids = {ids:[id]}
+          axios.put('https://api.spotify.com/v1/me/tracks/?ids=', ids, {
+            headers: { 'Authorization': 'Bearer ' + this.accessToken }
+          }).then((res) => {
+            this.alert.alertType = 'success'
+            this.alert.alertIcon = 'check_circle'
+            this.alert.alertMessage = 'Song added'
+            this.alert.active = true
+          })
+        }
+      })
     }
   }
 
@@ -115,10 +128,17 @@
     methods,
     data () {
       return {
-        song: '',
+        song: null,
+        addSong: null,
         audioPlaying: false,
         loading: false,
-        accessToken: ''
+        accessToken: '',
+        alert: {
+          active: false,
+          alertType: null,
+          alertIcon: null,
+          alertMessage: null
+        },
       }
     },
     beforeMount () {
@@ -161,5 +181,11 @@
   bottom: 0px;
   z-index: 2;
   margin-left: 0.7vw;
+}
+.song-alert {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  margin: 0;
 }
 </style>

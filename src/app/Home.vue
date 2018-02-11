@@ -1,5 +1,8 @@
 <template>
   <div>
+    <v-alert color="warning" icon="warning" dismissible v-model="tokenAlert">
+      Access Token Expired, Please Log In Again.
+    </v-alert>
     <v-expansion-panel v-if="accessToken && userData">
       <v-expansion-panel-content>
         <v-alert color="success" icon="success" dismissible v-model="successAlert">
