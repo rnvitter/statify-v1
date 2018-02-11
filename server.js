@@ -51,7 +51,7 @@ app.get('/login', function (req, res) {
   var state = generateRandomString(16)
   res.cookie(stateKey, state)
 
-  var scope = 'user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private user-library-modify'
+  var scope = 'user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private user-library-read user-library-modify'
   res.send('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       client_id: client_id,

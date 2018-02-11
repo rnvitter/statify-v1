@@ -33,7 +33,7 @@
               <v-btn icon @click="playPreview(card.preview_url)">
                 <v-icon>play_arrow</v-icon>
               </v-btn>
-              <v-btn icon @click="$emit('saveSong', card.id)">
+              <v-btn icon @click="saveTrack(card.id)" :disabled="hasTrack(card.id)">
                 <v-icon>add</v-icon>
               </v-btn>
               <v-btn icon>
@@ -94,6 +94,17 @@
       } else {
         this.audioPlaying = false
       }
+    },
+    hasTrack (id) {
+      axios.get('https://api.spotify.com/v1/me/tracks/contains?ids=' + id, {
+        headers: { 'Authorization': 'Bearer ' + this.accessToken }
+      }).then((res) => res.data[0])
+    },
+    saveTrack (id) {
+      const ids = {ids:[id]}
+      axios.put('https://api.spotify.com/v1/me/tracks/?ids=', ids, {
+        headers: { 'Authorization': 'Bearer ' + this.accessToken }
+      }).then((res) => console.log(res))
     }
   }
 
