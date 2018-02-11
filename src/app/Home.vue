@@ -48,7 +48,10 @@
             </v-flex>
             <v-container fluid grid-list-md>
               <v-layout row wrap>
-                <v-flex d-flex xs12 sm6 md4 lg3 xl4>
+                <v-flex d-flex xs2 md2 lg1 v-if="type === 'artists'">
+                  <v-btn @click="getData">Load</v-btn>
+                </v-flex>
+                <v-flex d-flex xs12 sm6 md4 lg3 xl4 v-else>
                   <v-btn @click="getData">Load</v-btn>
                   <v-btn @click="createPlaylist" v-if="type === 'tracks'">Create Playlist</v-btn>
                 </v-flex>
@@ -105,6 +108,9 @@
           _.forEach(res.data.items, song => {
             this.songs.push(song.uri)
           })
+        }).catch((err) => {
+          this.logout()
+          this.tokenAlert = true
         })
     },
     createPlaylist () {

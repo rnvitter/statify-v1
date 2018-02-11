@@ -43,7 +43,7 @@
               name="share-link"
               color="green"
               style="margin:10px 30px 0 30px;"
-              label="<== Click To Get Link"
+              label="< Get Link | Copy Link >"
               v-model="shareLink">
             </v-text-field>
           </v-flex>
@@ -108,6 +108,9 @@
           })
           this.topMusicIds = ids.toString()
           this.getTopMusicData()
+        }).catch((err) => {
+          this.logout()
+          this.tokenAlert = true
         })
     },
     getTopMusicData () {
@@ -118,12 +121,16 @@
       }).then((res) => {
         this.topMusic = res.data.tracks
         this.getShareLink()
+      }).catch((err) => {
+        this.logout()
+        this.tokenAlert = true
       })
     },
     clearTopMusic () {
       this.savetopMusicData(null)
       this.savetopMusicUsername(null)
       this.savetopMusicDialogState(null)
+      this.topMusicIds = []
     },
     hideTopMusic () {
       this.showTopMusicPreview = false

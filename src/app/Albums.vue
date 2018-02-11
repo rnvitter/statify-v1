@@ -15,17 +15,23 @@
               height="50vh">
               <v-container fill-height fluid>
                 <v-layout fill-height>
-                  <v-flex xs12 align-end flexbox>
-                    <span style="z-index:3" v-if="card.images">
+                  <v-flex xs12 flexbox style="flex-direction:column">
+                    <span>
+                      <h4 v-if="topTracks[0].artists.some(e => e.id === card.id)"
+                        v-for="track in topTracks" class="top-tracks"
+                        style="opacity:0.5; font-size:20px;">{{ track.name }}
+                      </h4>
+                    </span>
+                    <span style="z-index:3; margin-top:auto;" v-if="card.images">
                       <h4>{{ card.name }}</h4>
                     </span>
-                    <span style="z-index:3" v-else>
+                    <span style="z-index:3; margin-top:auto;" v-else>
                       <h5>{{ card.name }}</h5>
                       <h5 v-if="card.artists">{{ card.artists[0].name }}</h5>
                       <h5>{{ card.album.name }}</h5>
                     </span>
                     <div class="animation-wrapper">
-                      <AudioAnimation v-if="audioPlaying && card.preview_url === song"></AudioAnimation>
+                      <AudioAnimation v-if="audioPlaying && card.id === song"></AudioAnimation>
                     </div>
                   </v-flex>
                 </v-layout>
@@ -118,7 +124,6 @@
       axios.get('https://api.spotify.com/v1/me/tracks/contains?ids=' + id, {
         headers: { 'Authorization': 'Bearer ' + this.accessToken }
       }).then((res) => {
-        console.log(res.data[0])
         if (res.data[0]) {
           this.alert.alertType = 'info'
           this.alert.alertIcon = 'info'
