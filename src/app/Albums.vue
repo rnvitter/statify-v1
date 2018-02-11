@@ -9,14 +9,14 @@
               {{ alert.alertMessage }}
             </v-alert>
             <v-card-media
-              v-if="type === 'artists' ? card.images : card.album && card.album.images"
+              v-if="card.images ? card.images : card.album && card.album.images"
               @click="playPreview(card.preview_url)"
-              :src="type === 'artists' ? card.images[0].url : card.album.images[0].url"
+              :src="card.images ? card.images[0].url : card.album.images[0].url"
               height="50vh">
               <v-container fill-height fluid>
                 <v-layout fill-height>
                   <v-flex xs12 align-end flexbox>
-                    <span style="z-index:3" v-if="type === 'artists'">
+                    <span style="z-index:3" v-if="card.images">
                       <h4>{{ card.name }}</h4>
                     </span>
                     <span style="z-index:3" v-else>
