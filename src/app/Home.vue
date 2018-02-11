@@ -176,6 +176,8 @@
           }
         }).then((res) => {
           this.userData = res.data
+        }).catch((res) => {
+          this.logout()
         })
         const musicData = this.getData()
 
