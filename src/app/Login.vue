@@ -22,9 +22,9 @@
 
   const methods = {
     ...mapActions([
-      'savetop20Data',
-      'saveTop20Username',
-      'saveTop20DialogState'
+      'savetopMusicData',
+      'savetopMusicUsername',
+      'savetopMusicDialogState'
     ]),
     login () {
       SpotifyService.login()
@@ -39,11 +39,10 @@
     methods,
     components,
     beforeMount () {
-      if (this.$route.query.showTop20Preview) {
-        this.savetop20Data(this.$route.query.data)
-        this.saveTop20Username(this.$route.query.username)
-        this.saveTop20DialogState(this.$route.query.showTop20Preview)
-        console.log(this.$store)
+      if (this.$route.query.showTopMusicPreview) {
+        this.savetopMusicData(this.$route.query.data)
+        this.savetopMusicUsername(this.$route.query.username)
+        this.savetopMusicDialogState(this.$route.query.showTopMusicPreview)
       }
     }
   }

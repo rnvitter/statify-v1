@@ -1,42 +1,42 @@
 const state = {
-  top20Data: null,
-  top20Username: null,
-  top20DialogState: null
+  topMusicData: null,
+  topMusicUsername: null,
+  topMusicDialogState: null
 }
 
 const mutations = {
   'SAVE_TOP20_DATA' (currentState, data) {
-    currentState.top20Data = data
+    currentState.topMusicData = data
   },
   'SAVE_TOP20_USERNAME' (currentState, data) {
-    currentState.top20Username = data
+    currentState.topMusicUsername = data
   },
   'SAVE_TOP20_DIALOG_STATE' (currentState, data) {
-    currentState.top20DialogState = data
+    currentState.topMusicDialogState = data
   }
 }
 
 const actions = {
-  savetop20Data ({ commit }, data) {
+  savetopMusicData ({ commit }, data) {
     commit('SAVE_TOP20_DATA', data)
   },
-  saveTop20Username ({ commit }, data) {
+  savetopMusicUsername ({ commit }, data) {
     commit('SAVE_TOP20_USERNAME', data)
   },
-  saveTop20DialogState ({ commit }, data) {
+  savetopMusicDialogState ({ commit }, data) {
     commit('SAVE_TOP20_DIALOG_STATE', data)
   }
 }
 
 const getters = {
-  top20Data (currentState) {
-    return currentState.top20Data
+  topMusicData (currentState) {
+    return currentState.topMusicData
   },
-  top20Username (currentState) {
-    return currentState.top20Username
+  topMusicUsername (currentState) {
+    return currentState.topMusicUsername
   },
-  top20DialogState (currentState) {
-    return currentState.top20DialogState
+  topMusicDialogState (currentState) {
+    return currentState.topMusicDialogState
   }
 }
 

@@ -4,15 +4,19 @@
       <v-layout row wrap>
         <v-flex xs12 sm6 md4 lg3 v-for="(card, index) in data" :key="card.title">
           <v-card style="width:100%">
+            <v-alert v-if="card.id === addSong" class="song-alert" dismissible
+              :color="alert.alertType" :icon="alert.alertIcon" v-model="alert.active">
+              {{ alert.alertMessage }}
+            </v-alert>
             <v-card-media
-              v-if="search.type === 'artists' ? card.images : card.album && card.album.images"
+              v-if="type === 'artists' ? card.images : card.album && card.album.images"
               @click="playPreview(card.preview_url)"
-              :src="search.type === 'artists' ? card.images[0].url : card.album.images[0].url"
+              :src="type === 'artists' ? card.images[0].url : card.album.images[0].url"
               height="50vh">
               <v-container fill-height fluid>
                 <v-layout fill-height>
                   <v-flex xs12 align-end flexbox>
-                    <span style="z-index:3" v-if="search.type === 'artists'">
+                    <span style="z-index:3" v-if="type === 'artists'">
                       <h4>{{ card.name }}</h4>
                     </span>
                     <span style="z-index:3" v-else>
@@ -33,7 +37,7 @@
               <v-btn icon @click="playPreview(card.preview_url)">
                 <v-icon>play_arrow</v-icon>
               </v-btn>
-              <v-btn icon @click="saveTrack(card.id)" :disabled="hasTrack(card.id)">
+              <v-btn icon @click="saveTrack(card.id)">
                 <v-icon>add</v-icon>
               </v-btn>
               <v-btn icon>
@@ -56,7 +60,6 @@
 
   const props = {
     data: { type: Array, required: true },
-    search: { type: Object, required: true },
     type: { type: String, required: true }
   }
 
@@ -150,15 +153,15 @@
 <style>
 .albums {
   margin-top: 10px;
-  -webkit-animation: 2s ease 0s normal forwards 0 album-fade-in;
-  animation: 2s ease 0s normal forwards 1 album-fade-in;
+  -webkit-animation: 2s ease 0s normal forwards 0 fade-in;
+  animation: 2s ease 0s normal forwards 1 fade-in;
 }
-@-webkit-keyframes album-fade-in {
+@-webkit-keyframes fade-in {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
 
-@keyframes album-fade-in {
+@keyframes fade-in {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }

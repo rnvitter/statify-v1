@@ -31,7 +31,7 @@
             </v-flex>
             <v-flex sm6 xs12>
               <v-subheader>Time</v-subheader>
-              <v-radio-group v-model="search.timeRange" :mandatory="false">
+              <v-radio-group v-model="timeRange" :mandatory="false">
                 <v-radio label="Last Month" value="short_term" color="green"></v-radio>
                 <v-radio label="Last 6 Months" value="medium_term" color="green"></v-radio>
                 <v-radio label="Last Several Years" value="long_term" color="green"></v-radio>
@@ -40,23 +40,32 @@
             <v-flex xs12>
               <v-subheader># of Tracks</v-subheader>
               <v-flex xs9>
-                <v-slider color="green" :min="3" :max="50" v-model="search.limit"></v-slider>
+                <v-slider color="green" :min="3" :max="50" v-model="limit"></v-slider>
               </v-flex>
               <v-flex xs1 style="margin-right:10px">
-                <v-text-field v-model="search.limit" type="number"></v-text-field>
+                <v-text-field v-model="limit" type="number"></v-text-field>
               </v-flex>
             </v-flex>
-            <v-flex>
-              <v-btn @click="getData">Load</v-btn>
-              <v-btn @click="createPlaylist" v-if="search.type === 'tracks'">Create Playlist</v-btn>
-              <v-spacer></v-spacer>
-              <top-20-button :username="userData.display_name"></top-20-button>
-            </v-flex>
+            <v-container fluid grid-list-md>
+              <v-layout row wrap>
+                <v-flex d-flex xs12 sm6 md4 lg3 xl4>
+                  <v-btn @click="getData">Load</v-btn>
+                  <v-btn @click="createPlaylist" v-if="type === 'tracks'">Create Playlist</v-btn>
+                </v-flex>
+                <v-flex d-flex xs12 sm6 md8 lg9 xl8>
+                  <top-music-button v-if="type === 'tracks'" :type="type"
+                     :timeRange="timeRange" :limit="limit" :username="userData.display_name">
+                  </top-music-button>
+                </v-flex>
+              </v-layout>
+            </v-container>
         </v-layout>
       </v-expansion-panel-content>
     </v-expansion-panel>
 
-    <albums v-if="accessToken" :data="data" :search="search" :type="type"></albums>
+    <albums v-if="accessToken" :data="data"
+      :timeRange="timeRange" :limit="limit" :type="type">
+    </albums>
 
     <login v-else></login>
   </div>
@@ -68,7 +77,7 @@
   import _ from 'lodash'
 
   import login from './Login'
-  import Top20Button from './Top20Button'
+  import TopMusicButton from './TopMusicButton'
   import Albums from './Albums'
 
   import { BASE_URL } from '../constants'
@@ -77,7 +86,7 @@
 
   const components = {
     login,
-    Top20Button,
+    TopMusicButton,
     Albums
   }
 
@@ -86,9 +95,8 @@
       window.location.href = BASE_URL
     },
     getData () {
-      this.search.type = this.type
-      const query = '?time_range=' + this.search.timeRange + '&limit=' + this.search.limit
-        axios.get('https://api.spotify.com/v1/me/top/' + this.search.type + query, {
+      const query = '?time_range=' + this.timeRange + '&limit=' + this.limit
+        axios.get('https://api.spotify.com/v1/me/top/' + this.type + query, {
           headers: {
             'Authorization': 'Bearer ' + this.accessToken
           }
@@ -97,7 +105,6 @@
           _.forEach(res.data.items, song => {
             this.songs.push(song.uri)
           })
-          console.log(this.data)
         })
     },
     createPlaylist () {
@@ -133,14 +140,14 @@
   const computed = {
     playlistName () {
       let time = ''
-      if (this.search.timeRange === 'long_term') {
+      if (this.timeRange === 'long_term') {
         time = 'Last Several Years'
-      } else if (this.search.timeRange === 'medium_term') {
+      } else if (this.timeRange === 'medium_term') {
         time = 'Last 6 Months'
       } else {
         time = 'Last Month'
       }
-      return 'Top ' + this.search.limit + ' Songs Over the ' + time
+      return 'Top ' + this.limit + ' Songs Over the ' + time
     }
   }
 
@@ -153,20 +160,16 @@
       return {
         accessToken: '',
         topArtists: [],
-        search: {
-          type: 'tracks',
-          timeRange: 'short_term',
-          limit: 20
-        },
         type: 'tracks',
+        timeRange: 'short_term',
         limit: 20,
         data: [],
         songs: [],
-        top20: [],
         userData: undefined,
         errors: '',
         successAlert: false,
-        failureAlert: false
+        failureAlert: false,
+        tokenAlert: false
       }
     },
     beforeMount () {
@@ -251,12 +254,6 @@
     .logout-btn {
       font-size: 14px;
       margin-left: 15%;
-    }
-    .album-container {
-      padding: 6px 0px 3px 0px;
-    }
-    .rating-overlay {
-      left: 4%;
     }
   }
 </style>
