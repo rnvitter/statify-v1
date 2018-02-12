@@ -1,23 +1,28 @@
 <template>
   <span>
-    <v-btn @click.prevent="showTopMusicPreview = true" v-if="type === 'tracks'" class="fr">
-      Share Your Top {{ limit }} {{ type }}
+    <v-btn @click.prevent="showTopMusicPreview = true" class="fr">
+      Share
     </v-btn>
 
     <v-dialog v-model="showTopMusicPreview" fullscreen v-if="topMusicUsername">
       <div id="topMusic" style="margin: auto;" class="grey lighten-3">
-        <v-toolbar color="white">
-          <v-toolbar-title class="green--text">
-              {{ displayName }}'s Top {{ limit }} ({{ timePeriod[timeRange] }})
+        <v-toolbar color="white" height="80px">
+          <v-toolbar-title style="color:black; margin-top:5px;">
+            <div>
+              {{ displayName }}'s Top {{ topMusicLimit }}
+              {{ topMusicType | capitalize }} ({{ timePeriod[timeRange] }})
+            </div>
+            <v-btn
+              style="color:#1db954" flat
+              @click.native="hideTopMusic">Discover Your Top Songs and Arists
+            </v-btn>
           </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn style="color:#1db954" flat @click.native="hideTopMusic">Discover Your Top Songs and Arists</v-btn>
         </v-toolbar>
         <v-container fluid style="min-height:0;" grid-list-lg>
           <v-layout row wrap>
             <v-card>
               <albums style="margin-top:0" :data="topMusic"
-                :timeRange="timeRange" :limit="limit" type="tracks">
+                :timeRange="timeRange" :limit="limit" :type="topMusicType">
               </albums>
             </v-card>
           </v-layout>
@@ -86,6 +91,8 @@
     ...mapActions([
       'savetopMusicData',
       'savetopMusicUsername',
+      'savetopMusicType',
+      'savetopMusicLimit',
       'savetopMusicDialogState'
     ]),
     getTopMusicIds () {
@@ -109,12 +116,18 @@
         })
     },
     getTopMusicData () {
-      axios.get('https://api.spotify.com/v1/tracks/?ids=' + this.topMusicIds, {
+      let type = null
+      if (this.topMusicType) {
+        type = this.topMusicType
+      } else {
+        type = this.type
+      }
+      axios.get(`https://api.spotify.com/v1/${type}/?ids=` + this.topMusicIds, {
         headers: {
           'Authorization': 'Bearer ' + this.accessToken
         }
       }).then((res) => {
-        this.topMusic = res.data.tracks
+        this.topMusic = res.data[type]
         this.getShareLink()
       }).catch((err) => {
         this.logout()
@@ -124,6 +137,8 @@
     clearTopMusic () {
       this.savetopMusicData(null)
       this.savetopMusicUsername(null)
+      this.savetopMusicType(null)
+      this.savetopMusicLimit(null)
       this.savetopMusicDialogState(null)
       this.topMusicIds = []
     },
@@ -134,8 +149,10 @@
     getShareLink () {
       const data = 'data=' + btoa(this.topMusicIds)
       const user = 'username=' + btoa(this.username)
+      const type = 'type=' + this.type
+      const limit = 'limit=' + this.limit
       const show = 'showTopMusicPreview=true'
-      this.shareLink = BASE_URL + '?' + show + '&' + data + '&' + user
+      this.shareLink = BASE_URL + '?' + show + '&' + data + '&' + user + '&' + type + '&' + limit
     },
     copyLink () {
       this.$copyText(this.shareLink).then((e) => {

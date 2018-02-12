@@ -24,6 +24,8 @@
     ...mapActions([
       'savetopMusicData',
       'savetopMusicUsername',
+      'savetopMusicType',
+      'savetopMusicLimit',
       'savetopMusicDialogState'
     ]),
     login () {
@@ -42,6 +44,8 @@
       if (this.$route.query.showTopMusicPreview) {
         this.savetopMusicData(this.$route.query.data)
         this.savetopMusicUsername(this.$route.query.username)
+        this.savetopMusicType(this.$route.query.type)
+        this.savetopMusicLimit(this.$route.query.limit)
         this.savetopMusicDialogState(this.$route.query.showTopMusicPreview)
       }
     }
