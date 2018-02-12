@@ -1,14 +1,14 @@
 <template>
   <div class="nav">
     <v-content>
-      <v-container fluid fill-height>
+      <div fluid fill-height style="padding:16px">
         <v-layout
           justify-center
           align-center
         >
           <slot></slot>
         </v-layout>
-      </v-container>
+      </div>
     </v-content>
   </div>
 </template>

@@ -13,7 +13,7 @@
               @click="playPreview(card.preview_url)"
               :src="card.images ? card.images[0].url : card.album.images[0].url"
               height="50vh">
-              <v-container fill-height fluid>
+              <div fill-height fluid style="padding:10px 16px">
                 <v-layout fill-height>
                   <v-flex xs12 flexbox style="flex-direction:column">
                     <span>
@@ -35,7 +35,7 @@
                     </div>
                   </v-flex>
                 </v-layout>
-              </v-container>
+              </div>
             </v-card-media>
             <v-card-actions class="white">
               <div class="rank">{{ index + 1 }}</div>
