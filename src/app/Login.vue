@@ -70,11 +70,6 @@
           flex-direction: column;
   height: 100vh;
 }
-.spotify-icon {
-  margin-left: 15px;
-  color: #1db954;
-  font-size: 52px;
-}
 .title-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;

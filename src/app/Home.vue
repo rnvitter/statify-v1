@@ -47,17 +47,22 @@
               </v-flex>
             </v-flex>
             <v-container fluid grid-list-md>
-              <v-layout row wrap>
-                <v-flex d-flex xs2 md2 lg1 v-if="type === 'artists'">
+              <v-layout row wrap justify-space-between>
+                <v-flex d-flex xs1 v-if="type === 'artists'">
                   <v-btn @click="getData">Load</v-btn>
                 </v-flex>
                 <v-flex d-flex xs12 sm6 md4 lg3 xl4 v-else>
                   <v-btn @click="getData">Load</v-btn>
                   <v-btn @click="createPlaylist" v-if="type === 'tracks'">Create Playlist</v-btn>
                 </v-flex>
-                <v-flex d-flex xs12 sm6 md8 lg9 xl8>
-                  <top-music-button v-if="type === 'tracks'" :type="type"
-                     :timeRange="timeRange" :limit="limit" :username="userData.display_name">
+                <v-flex d-flex xs11 v-if="type === 'artists'">
+                  <top-music-button :type="type" :timeRange="timeRange"
+                     :limit="limit" :username="userData.display_name">
+                  </top-music-button>
+                </v-flex>
+                <v-flex d-flex xs12 sm6 md8 lg9 xl8 v-else>
+                  <top-music-button :type="type" :timeRange="timeRange"
+                     :limit="limit" :username="userData.display_name">
                   </top-music-button>
                 </v-flex>
               </v-layout>
@@ -117,7 +122,7 @@
         const id = this.userData.id
         const songs = this.songs
         const playlistData = {
-          name: this.playlistName,
+          name: this.timePeriod[this.timeRange],
           public: false
         }
         const headers = {
@@ -143,31 +148,21 @@
     }
   }
 
-  const computed = {
-    playlistName () {
-      let time = ''
-      if (this.timeRange === 'long_term') {
-        time = 'Last Several Years'
-      } else if (this.timeRange === 'medium_term') {
-        time = 'Last 6 Months'
-      } else {
-        time = 'Last Month'
-      }
-      return 'Top ' + this.limit + ' Songs Over the ' + time
-    }
-  }
-
   export default {
     name,
     components,
     methods,
-    computed,
     data () {
       return {
         accessToken: '',
         topArtists: [],
         type: 'tracks',
         timeRange: 'short_term',
+        timePeriod: {
+          'short_term': 'Last Month',
+          'medium_term': 'Last 6 Months',
+          'long_term': 'Last Several Years'
+        },
         limit: 20,
         data: [],
         songs: [],

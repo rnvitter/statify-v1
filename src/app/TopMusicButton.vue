@@ -32,24 +32,19 @@
           Link Copied to Clipboard
         </v-alert>
         <v-flex xs12>
-          <v-flex xs2>
-            <v-btn flat icon style="color:#1db954; margin-top:20px" @click="getTopMusicIds">
-              <v-icon>cached</v-icon>
-            </v-btn>
-          </v-flex>
           <v-flex xs10>
             <v-text-field
               id="share-link"
               name="share-link"
               color="green"
               style="margin:10px 30px 0 30px;"
-              label="< Get Link | Copy Link >"
+              label="Click to get a link to share >"
               v-model="shareLink">
             </v-text-field>
           </v-flex>
           <v-flex xs2>
-            <v-btn flat icon style="color:#1db954; margin-top:20px" @click="copyLink">
-              <v-icon>content_copy</v-icon>
+            <v-btn flat icon style="color:#1db954; margin-top:20px" @click="getTopMusicIds">
+              <v-icon>cached</v-icon>
             </v-btn>
           </v-flex>
         </v-flex>
@@ -153,8 +148,18 @@
     ...mapGetters([
       'topMusicData',
       'topMusicUsername',
+      'topMusicType',
+      'topMusicLimit',
       'topMusicDialogState'
     ])
+  }
+
+  const filters = {
+    capitalize (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    }
   }
 
   export default {
@@ -163,6 +168,7 @@
     components,
     methods,
     computed,
+    filters,
     data () {
       return {
         showTopMusicPreview: false,
@@ -180,15 +186,26 @@
     beforeMount () {
       this.accessToken = this.$route.query.access_token
       this.displayName = atob(this.topMusicUsername) || this.username
-      console.log(this.topMusicDialogState)
       if (this.topMusicDialogState === 'true') {
-        console.log('true')
         this.showTopMusicPreview = true
         this.topMusicIds = atob(this.topMusicData)
-        this.getTopMusicIds()
+        this.getTopMusicData()
       } else {
         this.showTopMusicPreview = false
+      }
+    },
+    watch: {
+      showTopMusicPreview () {
+        if (this.showTopMusicPreview === false) {
+          this.shareLink = null
+        }
       }
     }
   }
 </script>
+
+<style>
+.toolbar__content {
+  justify-content: center !important;
+}
+</style>
