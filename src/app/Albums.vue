@@ -19,13 +19,13 @@
                     <span>
                       <h4 v-if="topTracks[0].artists.some(e => e.id === card.id)"
                         v-for="track in topTracks" class="top-tracks"
-                        style="opacity:0.5; margin-left:20px; font-size:20px;">{{ track.name }}
+                        style="opacity:0.5; font-size:20px;">{{ track.name }}
                       </h4>
                     </span>
-                    <span style="z-index:3; margin-left:20px; margin-top:auto;" v-if="card.images">
+                    <span style="z-index:3; margin-top:auto;" v-if="card.images">
                       <h4>{{ card.name }}</h4>
                     </span>
-                    <span style="z-index:3; margin-left:20px; margin-top:auto;" v-else>
+                    <span style="z-index:3; margin-top:auto;" v-else>
                       <h5>{{ card.name }}</h5>
                       <h5 v-if="card.artists">{{ card.artists[0].name }}</h5>
                       <h5>{{ card.album.name }}</h5>
