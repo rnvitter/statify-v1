@@ -74,6 +74,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import axios from 'axios'
   import AudioAnimation from '../components/AudioAnimation'
 
@@ -121,7 +122,7 @@
     saveTrack (id) {
       this.addSong = id
       axios.get('https://api.spotify.com/v1/me/tracks/contains?ids=' + id, {
-        headers: { 'Authorization': 'Bearer ' + this.accessToken }
+        headers: { 'Authorization': 'Bearer ' + this.spotifyToken }
       }).then((res) => {
         if (res.data[0]) {
           this.alert.alertType = 'info'
@@ -131,7 +132,7 @@
         } else {
           const ids = {ids:[id]}
           axios.put('https://api.spotify.com/v1/me/tracks/?ids=', ids, {
-            headers: { 'Authorization': 'Bearer ' + this.accessToken }
+            headers: { 'Authorization': 'Bearer ' + this.spotifyToken }
           }).then((res) => {
             this.alert.alertType = 'success'
             this.alert.alertIcon = 'check_circle'
@@ -145,7 +146,7 @@
       document.querySelector('audio').pause()
       this.topTrackIndex = 0
       axios.get(`https://api.spotify.com/v1/artists/${id}/top-tracks?country=US`, {
-        headers: { 'Authorization': 'Bearer ' + this.accessToken }
+        headers: { 'Authorization': 'Bearer ' + this.spotifyToken }
       }).then((res) => {
         if (res.data.tracks.length >= 5) {
           this.topTracks = res.data.tracks.slice(0, 5)
@@ -178,19 +179,24 @@
     }
   }
 
+  const computed = {
+    ...mapGetters([
+      'spotifyToken'
+    ])
+  }
 
   export default {
     name,
     props,
     components,
     methods,
+    computed,
     data () {
       return {
         song: null,
         addSong: null,
         audioPlaying: false,
         loading: false,
-        accessToken: '',
         alert: {
           active: false,
           alertType: null,
@@ -200,9 +206,6 @@
         topTracks: [],
         topTrackIndex: 0
       }
-    },
-    beforeMount () {
-      this.accessToken = this.$route.query.access_token
     }
   }
 </script>

@@ -11,7 +11,7 @@
 <script>
   import { mapActions } from 'vuex'
 
-  import SpotifyService from '../services/spotifyService'
+  import apiService from '../services/apiService'
   import AudioAnimation from '../components/AudioAnimation'
 
   const name = 'login'
@@ -29,7 +29,7 @@
       'savetopMusicDialogState'
     ]),
     login () {
-      SpotifyService.login()
+      apiService.login()
         .then((res) => {
           window.location.replace(res.data)
         })

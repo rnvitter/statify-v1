@@ -4,8 +4,7 @@
       <div fluid fill-height style="padding:16px">
         <v-layout
           justify-center
-          align-center
-        >
+          align-center>
           <slot></slot>
         </v-layout>
       </div>

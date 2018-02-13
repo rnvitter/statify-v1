@@ -66,12 +66,10 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-
   import axios from 'axios'
-  import _ from 'lodash'
 
+  import apiService from '../services/apiService'
   import Albums from './Albums'
-
   import { BASE_URL } from '../constants'
 
   const name = 'TopMusicButton'
@@ -101,18 +99,15 @@
       const query = '?time_range=' + this.timeRange + '&limit=' + this.limit
         axios.get('https://api.spotify.com/v1/me/top/' + this.type + query, {
           headers: {
-            'Authorization': 'Bearer ' + this.accessToken
+            'Authorization': 'Bearer ' + this.spotifyToken
           }
         }).then((res) => {
           const ids = []
-          _.forEach(res.data.items, song => {
+          res.data.items.forEach(song => {
             ids.push(song.id)
           })
           this.topMusicIds = ids.toString()
           this.getTopMusicData()
-        }).catch((err) => {
-          this.logout()
-          this.tokenAlert = true
         })
     },
     getTopMusicData () {
@@ -124,14 +119,11 @@
       }
       axios.get(`https://api.spotify.com/v1/${type}/?ids=` + this.topMusicIds, {
         headers: {
-          'Authorization': 'Bearer ' + this.accessToken
+          'Authorization': 'Bearer ' + this.spotifyToken
         }
       }).then((res) => {
         this.topMusic = res.data[type]
         this.getShareLink()
-      }).catch((err) => {
-        this.logout()
-        this.tokenAlert = true
       })
     },
     clearTopMusic () {
@@ -167,7 +159,8 @@
       'topMusicUsername',
       'topMusicType',
       'topMusicLimit',
-      'topMusicDialogState'
+      'topMusicDialogState',
+      'spotifyToken'
     ])
   }
 

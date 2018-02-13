@@ -3,7 +3,7 @@
     <v-alert color="warning" icon="warning" dismissible v-model="tokenAlert">
       Access Token Expired, Please Log In Again.
     </v-alert>
-    <v-expansion-panel v-if="accessToken && userData">
+    <v-expansion-panel v-if="spotifyToken && userData">
       <v-expansion-panel-content>
         <v-alert color="success" icon="success" dismissible v-model="successAlert">
           Playlist Created
@@ -71,7 +71,7 @@
       </v-expansion-panel-content>
     </v-expansion-panel>
 
-    <albums v-if="accessToken" :data="data"
+    <albums v-if="spotifyToken" :data="data"
       :timeRange="timeRange" :limit="limit" :type="type">
     </albums>
 
@@ -80,9 +80,8 @@
 </template>
 
 <script>
-  import SpotifyService from '../services/spotifyService'
+  import { mapActions, mapGetters } from 'vuex'
   import axios from 'axios'
-  import _ from 'lodash'
 
   import login from './Login'
   import TopMusicButton from './TopMusicButton'
@@ -127,7 +126,7 @@
         }
         const headers = {
           headers: {
-            'Authorization': 'Bearer ' + this.accessToken
+            'Authorization': 'Bearer ' + this.spotifyToken
           }
         }
         axios.post('https://api.spotify.com/v1/users/' + id + '/playlists',
@@ -148,13 +147,19 @@
     }
   }
 
+  const computed = {
+    ...mapGetters([
+      'spotifyToken'
+    ])
+  }
+
   export default {
     name,
     components,
     methods,
+    computed,
     data () {
       return {
-        accessToken: '',
         topArtists: [],
         type: 'tracks',
         timeRange: 'short_term',
@@ -174,12 +179,25 @@
       }
     },
     beforeMount () {
-      this.accessToken = this.$route.query.access_token
+      if (this.$route.query.access_token) {
+        this.saveSpotifyToken(this.$route.query.access_token).then(() => {
+          window.history.replaceState(null, null, window.location.pathname)
+        })
+      }
 
-      if (this.accessToken) {
+      if (this.$route.query.showTopMusicPreview) {
+        this.savetopMusicData(this.$route.query.data)
+        this.savetopMusicUsername(this.$route.query.username)
+        this.savetopMusicType(this.$route.query.type)
+        this.savetopMusicLimit(this.$route.query.limit)
+        this.savetopMusicDialogState(this.$route.query.showTopMusicPreview)
+        window.history.replaceState(null, null, window.location.pathname)
+      }
+
+      if (this.spotifyToken) {
         const userData = axios.get('https://api.spotify.com/v1/me', {
           headers: {
-            'Authorization': 'Bearer ' + this.accessToken
+            'Authorization': 'Bearer ' + this.spotifyToken
           }
         }).then((res) => {
           this.userData = res.data
