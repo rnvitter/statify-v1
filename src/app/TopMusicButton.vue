@@ -139,12 +139,20 @@
       this.clearTopMusic()
     },
     getShareLink () {
-      const data = 'data=' + btoa(this.topMusicIds)
-      const user = 'username=' + btoa(this.username)
+      const data = 'data=' + this.topMusicIds
+      const user = 'username=' + this.username
       const type = 'type=' + this.type
       const limit = 'limit=' + this.limit
       const show = 'showTopMusicPreview=true'
-      this.shareLink = BASE_URL + '?' + show + '&' + data + '&' + user + '&' + type + '&' + limit
+      const shareLink = BASE_URL + '?' + show + '&' + data + '&' + user + '&' + type + '&' + limit
+      apiService.getShortUrl(shareLink)
+        .then((res) => {
+          if (res.data === 'INVALID_URI') {
+            this.shareLink = shareLink
+          } else {
+            this.shareLink = res.data
+          }
+        })
     },
     copyLink () {
       this.$copyText(this.shareLink).then((e) => {
@@ -194,11 +202,10 @@
       }
     },
     beforeMount () {
-      this.accessToken = this.$route.query.access_token
-      this.displayName = atob(this.topMusicUsername) || this.username
+      this.displayName = this.topMusicUsername || this.username
       if (this.topMusicDialogState === 'true') {
         this.showTopMusicPreview = true
-        this.topMusicIds = atob(this.topMusicData)
+        this.topMusicIds = this.topMusicData
         this.getTopMusicData()
       } else {
         this.showTopMusicPreview = false

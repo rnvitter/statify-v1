@@ -40,7 +40,8 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   redirect_uri = 'http://localhost:8082/callback/'
   redirect_url = 'http://localhost:8081/?'
-  var { client_id, client_secret } = require('./secrets')
+  bitly_redirect_uri = 'http://localhost:8082/bitly_callback/'
+  var { client_id, client_secret, bitly_access_token } = require('./secrets')
 }
 
 app.get('/api', (req, res) => {
@@ -117,32 +118,37 @@ app.get('/callback', function(req, res) {
   }
 })
 
-app.get('/refresh_token', function(req, res) {
+// app.get('/refresh_token', function(req, res) {
+//
+//   var refresh_token = req.query.refresh_token
+//   var authOptions = {
+//     url: 'https://accounts.spotify.com/api/token',
+//     headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+//     form: {
+//       grant_type: 'refresh_token',
+//       refresh_token: refresh_token
+//     },
+//     json: true
+//   }
+//
+//   request.post(authOptions, function(error, response, body) {
+//     if (!error && response.statusCode === 200) {
+//       var access_token = body.access_token
+//       res.send({
+//         'access_token': access_token
+//       })
+//     }
+//   })
+// })
 
-  var refresh_token = req.query.refresh_token
-  var authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-    form: {
-      grant_type: 'refresh_token',
-      refresh_token: refresh_token
-    },
-    json: true
-  }
-
-  request.post(authOptions, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-      var access_token = body.access_token
-      res.send({
-        'access_token': access_token
-      })
-    }
+app.get('/short_url', function(req, res) {
+  const longUrl = encodeURIComponent(req.query.url)
+  request.get(`https://api-ssl.bitly.com//v3/shorten?access_token=${bitly_access_token}&longUrl=${longUrl}/&format=txt`,
+    function(error, response, body) {
+      res.send(body)
   })
 })
 
-app.get('/logout', function(req, res) {
-  res.redirect('https://www.spotify.com/logout/')
-})
 
 app.listen(port, () => {
   console.log('API listening on port ' + port)

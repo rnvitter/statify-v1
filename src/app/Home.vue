@@ -98,18 +98,27 @@
   }
 
   const methods = {
+    ...mapActions([
+      'savetopMusicData',
+      'savetopMusicUsername',
+      'savetopMusicType',
+      'savetopMusicLimit',
+      'savetopMusicDialogState',
+      'saveSpotifyToken'
+    ]),
     logout () {
-      window.location.href = BASE_URL
+      this.saveSpotifyToken(null)
+      window.location.href = BASE_URL + 'login'
     },
     getData () {
       const query = '?time_range=' + this.timeRange + '&limit=' + this.limit
         axios.get('https://api.spotify.com/v1/me/top/' + this.type + query, {
           headers: {
-            'Authorization': 'Bearer ' + this.accessToken
+            'Authorization': 'Bearer ' + this.spotifyToken
           }
         }).then((res) => {
           this.data = res.data.items
-          _.forEach(res.data.items, song => {
+          res.data.items.forEach(song => {
             this.songs.push(song.uri)
           })
         }).catch((err) => {
