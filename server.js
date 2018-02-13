@@ -37,6 +37,7 @@ if (process.env.NODE_ENV === 'production') {
   redirect_url = redirect + '?'
   var client_id = process.env.client_id
   var client_secret = process.env.client_secret
+  var bitly_access_token = process.env.bitly_access_token
 } else {
   redirect_uri = 'http://localhost:8082/callback/'
   redirect_url = 'http://localhost:8081/?'
