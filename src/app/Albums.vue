@@ -92,7 +92,6 @@
     playPreview (song, id) {
       // for v-if on animation
       this.song = id
-
       let audio = document.querySelector('audio')
       if (audio.src === '') {
         audio.src = song
@@ -143,6 +142,7 @@
       })
     },
     getArtistsTopTracks (id) {
+      document.querySelector('audio').pause()
       this.topTrackIndex = 0
       axios.get(`https://api.spotify.com/v1/artists/${id}/top-tracks?country=US`, {
         headers: { 'Authorization': 'Bearer ' + this.accessToken }
