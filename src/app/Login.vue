@@ -4,7 +4,7 @@
       <h2 class="title">Statify <span class="separator">|</span></h2>
       <v-btn class="login-btn" @click="login()" flat>Login</v-btn>
     </div>
-    <AudioAnimation></AudioAnimation>
+    <AudioAnimation style="margin-bottom: -16px;"></AudioAnimation>
   </div>
 </template>
 
@@ -55,9 +55,6 @@
 <style>
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700');
 
-#app {
-  font-family: 'Montserrat', sans-serif;
-}
 .container {
   padding: 0px;
 }
@@ -72,7 +69,7 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 32px);
 }
 .title-wrapper {
   display: -webkit-box;
