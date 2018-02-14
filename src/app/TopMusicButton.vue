@@ -103,7 +103,8 @@
       'savetopMusicUsername',
       'savetopMusicType',
       'savetopMusicLimit',
-      'savetopMusicDialogState'
+      'savetopMusicDialogState',
+      'saveSpotifyToken'
     ]),
     getTopMusicIds () {
       this.loading = true
@@ -120,6 +121,10 @@
           })
           this.topMusicIds = ids.toString()
           this.getTopMusicData()
+        }).catch((err) => {
+          console.log(err)
+          this.saveSpotifyToken(null)
+          this.$forceUpdate()
         })
     },
     getTopMusicData () {
@@ -136,6 +141,10 @@
       }).then((res) => {
         this.topMusic = res.data[type]
         this.getShareLink()
+      }).catch((err) => {
+        console.log(err)
+        this.saveSpotifyToken(null)
+        this.$forceUpdate()
       })
     },
     clearTopMusic () {

@@ -108,7 +108,7 @@
     ]),
     logout () {
       this.saveSpotifyToken(null)
-      window.location.href = BASE_URL + 'login'
+      this.$forceUpdate()
     },
     getData () {
       const query = '?time_range=' + this.timeRange + '&limit=' + this.limit
