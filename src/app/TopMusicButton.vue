@@ -253,8 +253,12 @@
   }
 </script>
 
-<style>
+<style scoped>
 .toolbar__content {
   justify-content: center !important;
+}
+
+html, body {
+  overflow: hidden;
 }
 </style>
