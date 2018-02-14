@@ -176,7 +176,6 @@
             this.warningAlert = true
             this.statusTxt = res.data.status_txt
           } else {
-            console.log(res)
             this.shareLink = res.data.data.url
           }
         }).catch((err) => {
