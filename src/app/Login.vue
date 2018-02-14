@@ -45,7 +45,7 @@
         this.savetopMusicData(decodeURIComponent(this.$route.query.data))
         this.savetopMusicUsername(decodeURIComponent(this.$route.query.username))
         this.savetopMusicType(decodeURIComponent(this.$route.query.type))
-        this.savetopMusicLimit(decodeURIComponent(this.$route.query.limit))
+        this.savetopMusicLimit(decodeURIComponent(this.$route.query.limit).replace(/\/$/, ''))
         this.savetopMusicDialogState(decodeURIComponent(this.$route.query.showTopMusicPreview))
         window.history.replaceState(null, null, window.location.pathname)
       }
