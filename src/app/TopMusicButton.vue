@@ -37,8 +37,11 @@
           color="success" icon="check_circle">
           Link Copied to Clipboard
         </v-alert>
+        <v-alert color="info" icon="warning" dismissible v-model="warningAlert">
+          {{ this.statusTxt }}: Could Not Generate A Shortened Url, Please Use the Long Url
+        </v-alert>
         <v-flex xs12>
-          <v-flex xs10>
+          <v-flex xs8>
             <v-text-field
               id="share-link"
               name="share-link"
@@ -168,11 +171,17 @@
       const shareLink = BASE_URL + '?' + show + '&' + data + '&' + user + '&' + type + '&' + limit
       apiService.getShortUrl(shareLink)
         .then((res) => {
-          if (res.data === 'INVALID_URI') {
+          if (res.data.data.length === 0) {
             this.shareLink = shareLink
+            this.warningAlert = true
+            this.statusTxt = res.data.status_txt
           } else {
-            this.shareLink = res.data
+            console.log(res)
+            this.shareLink = res.data.data.url
           }
+        }).catch((err) => {
+          this.warningAlert = true
+          this.statusTxt = err
         })
     },
     copyLink () {
@@ -219,7 +228,9 @@
           'long_term': 'Last Several Years'
         },
         shareLink: null,
-        successAlert: false
+        successAlert: false,
+        warningAlert: false,
+        statusTxt: null
       }
     },
     beforeMount () {
