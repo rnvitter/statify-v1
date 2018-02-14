@@ -1,8 +1,9 @@
 <template>
   <span>
-    <v-btn @click.prevent="showTopMusicPreview = true" class="fr">
-      Share
-    </v-btn>
+    <v-tooltip bottom open-delay="500">
+      <v-btn @click.prevent="showTopMusicPreview = true" slot="activator" class="fr">Share</v-btn>
+      <span>Share Your Top Music</span>
+    </v-tooltip>
 
     <v-dialog v-model="showTopMusicPreview" fullscreen v-if="topMusicUsername">
       <div id="topMusic" style="margin: auto;" class="grey lighten-3">
@@ -48,9 +49,20 @@
             </v-text-field>
           </v-flex>
           <v-flex xs2>
-            <v-btn flat icon style="color:#1db954; margin-top:20px" @click="getTopMusicIds">
-              <v-icon>cached</v-icon>
-            </v-btn>
+            <v-tooltip bottom open-delay="500">
+              <v-btn flat icon style="color:#1db954; margin-top:20px" slot="activator" @click="getTopMusicIds">
+                <v-icon>cached</v-icon>
+              </v-btn>
+              <span>Generate Share Link</span>
+            </v-tooltip>
+          </v-flex>
+          <v-flex xs2>
+            <v-tooltip bottom open-delay="500">
+              <v-btn flat icon style="color:#1db954; margin-top:20px" slot="activator" :disabled="!shareLink" @click="copyLink">
+                <v-icon>content_copy</v-icon>
+              </v-btn>
+              <span>Copy Link to Clipboard</span>
+            </v-tooltip>
           </v-flex>
         </v-flex>
         <v-flex xs12>

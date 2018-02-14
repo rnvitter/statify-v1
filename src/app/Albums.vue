@@ -55,10 +55,13 @@
                 :disabled="topTracks.length === 0 || !topTracks[0].artists.some(e => e.id === card.id)">
                 <v-icon>skip_next</v-icon>
               </v-btn>
-              <v-btn icon @click="saveTrack(card.id)" v-if="type === 'tracks'">
-                <v-icon>add</v-icon>
-              </v-btn>
-              <v-tooltip open-delay="500" bottom v-if="type === 'artists'">
+              <v-tooltip bottom open-delay="500" v-if="type === 'tracks'">
+                <v-btn icon @click="saveTrack(card.id)">
+                  <v-icon>add</v-icon>
+                </v-btn>
+                <span>Add Song to Library</span>
+              </v-tooltip>
+              <v-tooltip bottom open-delay="500" v-if="type === 'artists'">
                 <v-btn icon @click="getArtistsTopTracks(card.id)" slot="activator">
                   <v-icon>format_list_numbered</v-icon>
                 </v-btn>
