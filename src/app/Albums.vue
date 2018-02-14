@@ -56,7 +56,7 @@
                 <v-icon>skip_next</v-icon>
               </v-btn>
               <v-tooltip bottom open-delay="500" v-if="type === 'tracks'">
-                <v-btn icon @click="saveTrack(card.id)">
+                <v-btn icon slot="activator" @click="saveTrack(card.id)">
                   <v-icon>add</v-icon>
                 </v-btn>
                 <span>Add Song to Library</span>
