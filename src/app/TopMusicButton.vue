@@ -246,18 +246,17 @@
       showTopMusicPreview () {
         if (this.showTopMusicPreview === false) {
           this.shareLink = null
+          document.body.style.overflow = 'auto'
+        } else {
+          document.body.style.overflow = 'hidden'
         }
       }
     }
   }
 </script>
 
-<style scoped>
+<style>
 .toolbar__content {
   justify-content: center !important;
-}
-
-html, body {
-  overflow: hidden;
 }
 </style>
