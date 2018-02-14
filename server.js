@@ -144,7 +144,7 @@ app.get('/callback', function(req, res) {
 
 app.get('/short_url', function(req, res) {
   const longUrl = encodeURIComponent(req.query.url)
-  request.get(`https://api-ssl.bitly.com//v3/shorten?access_token=${bitly_access_token}&longUrl=${longUrl}/&format=txt`,
+  request.get(`https://api-ssl.bitly.com//v3/shorten?access_token=${bitly_access_token}&longUrl=${longUrl}/`,
     function(error, response, body) {
       res.send(body)
   })

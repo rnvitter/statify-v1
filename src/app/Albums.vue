@@ -18,7 +18,7 @@
                   <v-flex xs12 flexbox style="flex-direction:column">
                     <span>
                       <h4 v-if="topTracks[0].artists.some(e => e.id === card.id)"
-                        v-for="track in topTracks" class="top-tracks"
+                        v-for="track in topTracks" class="top-tracks" :key="track.id"
                         style="opacity:0.5; font-size:20px;">{{ track.name }}
                       </h4>
                     </span>
