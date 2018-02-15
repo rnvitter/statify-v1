@@ -10,7 +10,7 @@
         <v-toolbar color="white" height="80px">
           <v-toolbar-title style="color:black; margin-top:5px;">
             <div class="top-music-title">
-              {{ displayName }}'s Top {{ topMusicLimit }}
+              {{ displayName }}'s Top {{ topMusicLimit | removeSlash }}
               {{ topMusicType | capitalize }} ({{ timePeriod[timeRange] }})
             </div>
             <v-btn class="top-music-btn"
@@ -206,6 +206,12 @@
       if (!value) return ''
       value = value.toString()
       return value.charAt(0).toUpperCase() + value.slice(1)
+    },
+    removeSlash (value) {
+      if (value.slice(-1) === '/') {
+        return value.slice(0, -1)
+      }
+        return value
     }
   }
 
