@@ -2,7 +2,7 @@
   <div v-if="data.length > 0" class="albums" :loading="loading">
     <v-container fluid grid-list-md class="grey lighten-5" v-if="!loading">
       <v-layout row wrap>
-        <v-flex xs12 sm6 md4 lg3 v-for="(card, index) in data" :key="card.title">
+        <v-flex xs12 sm6 md4 lg3 v-for="(card, index) in data" :key="card.name">
           <v-card style="width:100%">
             <v-alert v-if="card.id === addSong" class="song-alert" dismissible
               :color="alert.alertType" :icon="alert.alertIcon" v-model="alert.active">
@@ -95,7 +95,6 @@
   const methods = {
     playPreview (song, id) {
       // for v-if on animation
-      this.song = id
       let audio = document.querySelector('audio')
       if (audio.src === '') {
         audio.src = song
@@ -113,6 +112,7 @@
         audio.pause()
         audio.currentTime = 0
       }
+      this.song = id
     },
     audioUpdate () {
       const audio = this.$refs.audio
