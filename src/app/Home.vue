@@ -5,7 +5,7 @@
     </v-alert>
     <v-expansion-panel v-if="spotifyToken && userData">
       <v-expansion-panel-content>
-        <v-alert color="success" icon="success" dismissible v-model="successAlert">
+        <v-alert color="success" icon="check_circle" dismissible v-model="successAlert">
           Playlist Created
         </v-alert>
         <v-alert color="warning" icon="warning" dismissible v-model="failureAlert">
@@ -111,6 +111,7 @@
       this.$forceUpdate()
     },
     getData () {
+      this.songs = []
       const query = '?time_range=' + this.timeRange + '&limit=' + this.limit
         axios.get('https://api.spotify.com/v1/me/top/' + this.type + query, {
           headers: {
@@ -130,8 +131,9 @@
         const id = this.userData.id
         const songs = this.songs
         const playlistData = {
-          name: this.timePeriod[this.timeRange],
-          public: false
+          name: 'Your Top ' + this.limit + ' ' + this.type.charAt(0).toUpperCase() + this.type.slice(1) +
+            ' (' + this.timePeriod[this.timeRange] + ')',
+          public: true
         }
         const headers = {
           headers: {
