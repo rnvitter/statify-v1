@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-alert color="warning" icon="warning" dismissible v-model="tokenAlert">
+    <v-alert color="warning" icon="warning" class="token-alert" dismissible v-model="tokenAlert">
       Access Token Expired, Please Log In Again.
     </v-alert>
     <v-expansion-panel v-if="spotifyToken && userData">
@@ -39,10 +39,10 @@
             </v-flex>
             <v-flex xs12>
               <v-subheader># of Tracks</v-subheader>
-              <v-flex xs9>
+              <v-flex xs8>
                 <v-slider color="green" :min="3" :max="50" v-model="limit"></v-slider>
               </v-flex>
-              <v-flex xs1 style="margin-right:10px">
+              <v-flex xs1 style="margin-right:30px">
                 <v-text-field v-model="limit" type="number"></v-text-field>
               </v-flex>
             </v-flex>
@@ -268,6 +268,13 @@
       margin: 12px;
     }
 
+.token-alert {
+  position: absolute;
+  width: 100%;
+  margin-top: -16px;
+  margin-left: -16px;
+}
+
   @media only screen and (max-width: 560px) {
     .profile-pic {
       width: 80px;
@@ -283,6 +290,9 @@
     .logout-btn {
       font-size: 14px;
       margin-left: 15%;
+    }
+    .container.grid-list-md .layout .flex {
+      padding: 10px 0;
     }
   }
 </style>

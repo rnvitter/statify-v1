@@ -6,14 +6,14 @@
     </v-tooltip>
 
     <v-dialog v-model="showTopMusicPreview" fullscreen v-if="topMusicUsername">
-      <div id="topMusic" style="margin: auto;" class="grey lighten-3">
+      <div id="topMusic" style="margin: auto;" class="grey lighten-5">
         <v-toolbar color="white" height="80px">
           <v-toolbar-title style="color:black; margin-top:5px;">
-            <div>
+            <div class="top-music-title">
               {{ displayName }}'s Top {{ topMusicLimit }}
               {{ topMusicType | capitalize }} ({{ timePeriod[timeRange] }})
             </div>
-            <v-btn
+            <v-btn class="top-music-btn"
               style="color:#1db954" flat
               @click.native="hideTopMusic">Discover Your Top Songs and Arists
             </v-btn>
@@ -258,5 +258,22 @@
 <style>
 .toolbar__content {
   justify-content: center !important;
+}
+
+.top-music-title {
+  text-align: center;
+}
+
+.top-music-btn {
+  width: 95%;
+}
+
+@media only screen and (max-width: 500px) {
+  .top-music-title {
+    font-size: 12px;
+  }
+  .top-music-btn {
+    font-size: 13px;
+  }
 }
 </style>

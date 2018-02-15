@@ -1,6 +1,6 @@
 <template>
   <div v-if="data.length > 0" class="albums" :loading="loading">
-    <v-container fluid grid-list-md class="grey lighten-4" v-if="!loading">
+    <v-container fluid grid-list-md class="grey lighten-5" v-if="!loading">
       <v-layout row wrap>
         <v-flex xs12 sm6 md4 lg3 v-for="(card, index) in data" :key="card.title">
           <v-card style="width:100%">
