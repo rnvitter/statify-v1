@@ -40,28 +40,28 @@
             <v-card-actions class="white">
               <div class="rank">{{ index + 1 }}</div>
               <v-spacer></v-spacer>
-              <v-btn icon @click="getTopTrackIndex('prev', card.id)" v-if="type === 'artists'"
+              <v-btn icon @click="getTopTrackIndex('prev', card.id)" v-if="card.images"
                 :disabled="topTracks.length === 0 || !topTracks[0].artists.some(e => e.id === card.id)">
                 <v-icon>skip_previous</v-icon>
               </v-btn>
-              <v-btn icon @click="playPreview(card.preview_url, card.id)" v-if="type === 'tracks'">
+              <v-btn icon @click="playPreview(card.preview_url, card.id)" v-if="card.album">
                 <v-icon>play_arrow</v-icon>
               </v-btn>
               <v-btn icon @click="getTopTrackIndex(null, card.id)" v-else
                 :disabled="topTracks.length === 0 || !topTracks[0].artists.some(e => e.id === card.id)">
                 <v-icon>play_arrow</v-icon>
               </v-btn>
-              <v-btn icon @click="getTopTrackIndex('next', card.id)" v-if="type === 'artists'"
+              <v-btn icon @click="getTopTrackIndex('next', card.id)" v-if="card.images"
                 :disabled="topTracks.length === 0 || !topTracks[0].artists.some(e => e.id === card.id)">
                 <v-icon>skip_next</v-icon>
               </v-btn>
-              <v-tooltip bottom open-delay="500" v-if="type === 'tracks'">
+              <v-tooltip bottom open-delay="500" v-if="card.album">
                 <v-btn icon slot="activator" @click="saveTrack(card.id)">
                   <v-icon>add</v-icon>
                 </v-btn>
                 <span>Add Song to Library</span>
               </v-tooltip>
-              <v-tooltip bottom open-delay="500" v-if="type === 'artists'">
+              <v-tooltip bottom open-delay="500" v-if="card.images">
                 <v-btn icon @click="getArtistsTopTracks(card.id)" slot="activator">
                   <v-icon>format_list_numbered</v-icon>
                 </v-btn>

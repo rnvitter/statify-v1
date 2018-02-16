@@ -3,8 +3,11 @@
     <v-alert color="warning" icon="warning" class="token-alert" dismissible v-model="tokenAlert">
       Access Token Expired, Please Log In Again.
     </v-alert>
+    <friends-top-music :type="type" :timeRange="timeRange" v-if="userData"
+        :limit="limit" :username="userData.display_name">
+    </friends-top-music>
     <v-expansion-panel v-if="spotifyToken && userData">
-      <v-expansion-panel-content>
+      <v-expansion-panel-content style="overflow:hidden">
         <v-alert color="success" icon="check_circle" dismissible v-model="successAlert">
           Playlist Created
         </v-alert>
@@ -46,25 +49,32 @@
                 <v-text-field v-model="limit" type="number"></v-text-field>
               </v-flex>
             </v-flex>
-            <v-container fluid grid-list-md>
+            <v-container fluid grid-list-md v-if="data.length > 0">
               <v-layout row wrap justify-space-between>
-                <v-flex d-flex xs1 v-if="type === 'artists'">
+                <v-flex d-flex xs1 v-if="!data[0].album">
                   <v-btn @click="getData">Load</v-btn>
                 </v-flex>
                 <v-flex d-flex xs12 sm6 md4 lg3 xl4 v-else>
                   <v-btn @click="getData">Load</v-btn>
-                  <v-btn @click="createPlaylist" v-if="type === 'tracks'">Create Playlist</v-btn>
+                  <v-btn @click="createPlaylist" v-if="data[0].album">Create Playlist</v-btn>
                 </v-flex>
-                <v-flex d-flex xs11 v-if="type === 'artists'">
-                  <top-music-button :type="type" :timeRange="timeRange"
-                     :limit="limit" :username="userData.display_name">
-                  </top-music-button>
+                <v-flex d-flex xs12 sm6 md4 lg3 v-if="!data[0].album">
+                  <v-btn @click.prevent="showMusicShare=!showMusicShare" slot="activator" class="fr">
+                    <span class="mr-auto">Share Your Top {{ type }}</span>
+                    <v-icon v-if="showMusicShare">keyboard_arrow_up</v-icon>
+                    <v-icon v-else>keyboard_arrow_down</v-icon>
+                  </v-btn>
                 </v-flex>
-                <v-flex d-flex xs12 sm6 md8 lg9 xl8 v-else>
-                  <top-music-button :type="type" :timeRange="timeRange"
-                     :limit="limit" :username="userData.display_name">
-                  </top-music-button>
+                <v-flex d-flex xs12 sm6 md4 v-else>
+                  <v-btn @click.prevent="showMusicShare=!showMusicShare" slot="activator" class="fr">
+                    <span class="mr-auto">Share Your Top {{ type }}</span>
+                    <v-icon v-if="showMusicShare">keyboard_arrow_up</v-icon>
+                    <v-icon v-else>keyboard_arrow_down</v-icon>
+                  </v-btn>
                 </v-flex>
+                <top-music-share v-show="showMusicShare" :type="type" :timeRange="timeRange"
+                  :limit="limit" :username="userData.display_name" :showMusicShare="showMusicShare">
+                </top-music-share>
               </v-layout>
             </v-container>
         </v-layout>
@@ -84,7 +94,8 @@
   import axios from 'axios'
 
   import login from './Login'
-  import TopMusicButton from './TopMusicButton'
+  import FriendsTopMusic from './FriendsTopMusic'
+  import TopMusicShare from './TopMusicShare'
   import Albums from './Albums'
 
   import { BASE_URL } from '../constants'
@@ -93,7 +104,8 @@
 
   const components = {
     login,
-    TopMusicButton,
+    FriendsTopMusic,
+    TopMusicShare,
     Albums
   }
 
@@ -186,7 +198,8 @@
         errors: '',
         successAlert: false,
         failureAlert: false,
-        tokenAlert: false
+        tokenAlert: false,
+        showMusicShare: false
       }
     },
     beforeMount () {
@@ -292,9 +305,6 @@
     .logout-btn {
       font-size: 14px;
       margin-left: 15%;
-    }
-    .container.grid-list-md .layout .flex {
-      padding: 10px 0;
     }
   }
 </style>
