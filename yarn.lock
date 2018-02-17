@@ -5683,10 +5683,6 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
-vue-awesome@^2.3.4:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/vue-awesome/-/vue-awesome-2.3.4.tgz#a8b06a21dd95a5787e108561be89e216fd9a78e6"
-
 vue-clipboard2@^0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/vue-clipboard2/-/vue-clipboard2-0.0.8.tgz#a21ce9072379fc5fb28e1f1b460c82595b3066f4"

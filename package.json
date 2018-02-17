@@ -19,7 +19,6 @@
     "request": "^2.83.0",
     "tachyons": "^4.9.1",
     "vue": "^2.5.2",
-    "vue-awesome": "^2.3.4",
     "vue-clipboard2": "^0.0.8",
     "vue-router": "^3.0.1",
     "vuetify": "^0.17.6",
