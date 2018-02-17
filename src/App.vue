@@ -28,10 +28,12 @@
   html,
   html * {
     box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
   }
 
   html, body {
     font-family: 'Roboto', sans-serif;
+    -webkit-overflow-scrolling: touch;
   }
 
   h3 {

@@ -60,7 +60,7 @@
                 </v-btn>
                 <span>Add Song to Library</span>
               </v-tooltip>
-              <v-tooltip bottom open-delay="500" v-if="card.images">
+              <v-tooltip class="GetArtistsTop" bottom open-delay="500" v-if="card.images">
                 <v-btn icon @click="getArtistsTopTracks(card.id)" slot="activator">
                   <v-icon>format_list_numbered</v-icon>
                 </v-btn>
@@ -196,7 +196,8 @@
 
   const computed = {
     ...mapGetters([
-      'spotifyToken'
+      'spotifyToken',
+      'tipsSetting'
     ])
   }
 

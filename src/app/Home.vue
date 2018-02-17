@@ -72,7 +72,7 @@
                     <v-icon v-else>keyboard_arrow_down</v-icon>
                   </v-btn>
                 </v-flex>
-                <top-music-share v-show="showMusicShare" :type="type" :timeRange="timeRange"
+                <top-music-share @close="showMusicShare=false" v-show="showMusicShare" :type="type" :timeRange="timeRange"
                   :limit="limit" :username="userData.display_name" :showMusicShare="showMusicShare">
                 </top-music-share>
               </v-layout>
@@ -245,6 +245,7 @@
 
 #app {
   font-family: 'Montserrat', sans-serif;
+  -webkit-overflow-scrolling: touch;
 }
   .expansion-panel__container {
     background-color: rgba(0,0,0,0);

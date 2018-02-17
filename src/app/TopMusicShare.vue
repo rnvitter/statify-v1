@@ -15,25 +15,21 @@
               name="share-link"
               color="green"
               style="margin:10px 15px 0 15px;"
-              label="Click Arrows ==>"
+              label="Generating Link"
+              :loading="loading"
+              readonly
               v-model="shareLink">
             </v-text-field>
           </v-flex>
           <v-flex xs2 class="justify-center">
-            <v-tooltip bottom open-delay="500">
-              <v-btn flat icon style="color:#1db954; margin-top:20px" slot="activator" @click="getTopMusicIds">
-                <v-icon>cached</v-icon>
-              </v-btn>
-              <span>Generate Share Link</span>
-            </v-tooltip>
+            <v-btn flat icon style="color:#1db954; margin-top:20px" slot="activator" :disabled="!shareLink" @click="copyLink">
+            <v-icon>content_copy</v-icon>
+            </v-btn>
           </v-flex>
           <v-flex xs2 class="justify-center">
-            <v-tooltip bottom open-delay="500">
-              <v-btn flat icon style="color:#1db954; margin-top:20px" slot="activator" :disabled="!shareLink" @click="copyLink">
-                <v-icon>content_copy</v-icon>
-              </v-btn>
-              <span>Copy Link to Clipboard</span>
-            </v-tooltip>
+            <v-btn flat icon style="color:#1db954; margin-top:20px" slot="activator" :disabled="!!shareLink" @click="getTopMusicIds">
+            <v-icon>cached</v-icon>
+            </v-btn>
           </v-flex>
         </v-flex>
         <v-flex xs12>
@@ -42,8 +38,7 @@
             {{ timePeriod[timeRange] }} with your friends
           </p>
           <p style="text-align:center; margin:0 10px 10px 10px;" v-else>
-            Click the green arrows to generate a short link to share with friends.
-            Then click the copy button to copy the link to your clipboard
+            Click the green refresh button to generate a new link
           </p>
         </v-flex>
       </v-card>
@@ -129,12 +124,14 @@
                 .then((res) => {
                 if (res.data.data.length === 0) {
                     this.shareLink = shareLink
+                    this.loading = false
                     this.warningAlert = true
                     this.statusTxt = res.data.status_txt
                 } else {
                     this.shareLink = res.data.data.url
                 }
             }).catch((err) => {
+                this.loading = false
                 this.warningAlert = true
                 this.statusTxt = err
             })
@@ -142,6 +139,7 @@
         copyLink () {
             this.$copyText(this.shareLink).then((e) => {
                 this.successAlert = true
+                this.$emit('close', false)
             })
         }
     }
@@ -153,6 +151,7 @@
         methods,
         data () {
             return {
+                loading: false,
                 shareLink: null,
                 successAlert: false,
                 warningAlert: false,
@@ -169,6 +168,8 @@
         if (this.showMusicShare === false) {
           this.successAlert = false
           this.warningAlert = false
+        } else {
+          this.getTopMusicIds()
         }
       }
     }
