@@ -7,7 +7,7 @@
         :limit="limit" :username="userData.display_name">
     </friends-top-music>
     <v-expansion-panel v-if="spotifyToken && userData">
-      <v-expansion-panel-content style="overflow:hidden">
+      <v-expansion-panel-content style="overflow:hidden" expand-icon="menu" v-model="toolbar">
         <v-alert color="success" icon="check_circle" dismissible v-model="successAlert">
           Playlist Created
         </v-alert>
@@ -124,7 +124,7 @@
       this.tokenAlert = true
       this.$forceUpdate()
     },
-    getData () {
+    getData (keepOpen = false) {
       this.songs = []
       const query = '?time_range=' + this.timeRange + '&limit=' + this.limit
         axios.get('https://api.spotify.com/v1/me/top/' + this.type + query, {
@@ -136,6 +136,7 @@
           res.data.items.forEach(song => {
             this.songs.push(song.uri)
           })
+          keepOpen === true ? this.toolbar = true : this.toolbar = false
         }).catch((err) => {
           this.logout()
         })
@@ -184,6 +185,7 @@
     computed,
     data () {
       return {
+        toolbar: true,
         topArtists: [],
         type: 'tracks',
         timeRange: 'short_term',
@@ -230,7 +232,7 @@
           this.logout()
           this.tokenAlert = true
         })
-        const musicData = this.getData()
+        const musicData = this.getData(true)
 
         Promise.all([userData, musicData])
       }
@@ -289,6 +291,10 @@
   width: 100%;
   margin-top: -16px;
   margin-left: -16px;
+}
+
+.header__icon .icon {
+  color: #1db954 !important;
 }
 
   @media only screen and (max-width: 560px) {
