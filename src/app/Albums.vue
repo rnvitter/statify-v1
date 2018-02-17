@@ -3,15 +3,14 @@
     <v-container fluid grid-list-md class="grey lighten-5" v-if="!loading">
       <v-layout row wrap>
         <v-flex xs12 sm6 md4 lg3 v-for="(card, index) in data" :key="card.name">
-          <v-card style="width:100%">
+          <v-card style="width:100%" hover>
             <v-alert v-if="card.id === addSong" class="song-alert" dismissible
               :color="alert.alertType" :icon="alert.alertIcon" v-model="alert.active">
               {{ alert.alertMessage }}
             </v-alert>
             <v-card-media
               v-if="card.images ? card.images : card.album && card.album.images"
-              @click="playPreview(card.preview_url)"
-              :src="card.images ? card.images[0].url : card.album.images[0].url"
+              :style="getBackgroundImg(card)"
               height="50vh">
               <div fill-height fluid style="padding:10px 16px">
                 <v-layout fill-height>
@@ -179,6 +178,15 @@
     updateCurrentTrackStyle () {
       document.querySelectorAll('.top-tracks').forEach(el => el.style.opacity = 0.5)
       document.querySelectorAll('.top-tracks')[this.topTrackIndex].style.opacity = 1
+    },
+    getBackgroundImg (card) {
+      if (card.images && (this.topTracks.length === 0 || !this.topTracks[0].artists.some(e => e.id === card.id))) {
+        return `background: linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.7)), url('${card.images[0].url}') center center / cover no-repeat;`
+      } else if (card.images && this.topTracks[0].artists.some(e => e.id === card.id)) {
+        return `background: linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.2)), url('${card.images[0].url}') center center / cover no-repeat;`
+      } else {
+        return `background: linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.7)), url('${card.album.images[0].url}') center center / cover no-repeat;`
+      }
     }
   }
 
