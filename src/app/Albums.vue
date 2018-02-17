@@ -140,6 +140,8 @@
             this.alert.alertIcon = 'check_circle'
             this.alert.alertMessage = 'Song added'
             this.alert.active = true
+          }).catch((err) => {
+            this.$emit('apiError', err)
           })
         }
       })
@@ -155,6 +157,8 @@
         } else {
           this.topTracks = res.data.tracks.slice(0, (res.data.tracks.length - 1))
         }
+      }).catch((err) => {
+        this.$emit('apiError', err)
       })
     },
     getTopTrackIndex (direction, id) {

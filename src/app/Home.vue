@@ -81,7 +81,7 @@
       </v-expansion-panel-content>
     </v-expansion-panel>
 
-    <albums v-if="spotifyToken" :data="data"
+    <albums @apiError="logout(err)" v-if="spotifyToken" :data="data"
       :timeRange="timeRange" :limit="limit" :type="type">
     </albums>
 
@@ -118,8 +118,10 @@
       'savetopMusicDialogState',
       'saveSpotifyToken'
     ]),
-    logout () {
+    logout (err) {
+      console.log(err)
       this.saveSpotifyToken(null)
+      this.tokenAlert = true
       this.$forceUpdate()
     },
     getData () {
@@ -136,7 +138,6 @@
           })
         }).catch((err) => {
           this.logout()
-          this.tokenAlert = true
         })
     },
     createPlaylist () {
