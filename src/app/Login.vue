@@ -33,6 +33,13 @@
         .then((res) => {
           window.location.replace(res.data)
         })
+    },
+    clearTopMusic () {
+      this.savetopMusicData(null)
+      this.savetopMusicUsername(null)
+      this.savetopMusicType(null)
+      this.savetopMusicLimit(null)
+      this.savetopMusicDialogState(null)
     }
   }
 
@@ -41,6 +48,7 @@
     methods,
     components,
     beforeMount () {
+      this.clearTopMusic()
       if (this.$route.query.showTopMusicPreview) {
         this.savetopMusicData(decodeURIComponent(this.$route.query.data))
         this.savetopMusicUsername(decodeURIComponent(this.$route.query.username))
