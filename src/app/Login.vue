@@ -92,9 +92,9 @@
 }
 .title {
   font-weight: 700;
-  margin-left: 15px;
+  margin-left: 60px;
   color: #1db954;
-  font-size: 28px !important;
+  font-size: 42px !important;
 }
 .separator {
   font-weight: 300;
