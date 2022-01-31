@@ -75,6 +75,7 @@
 }
 .title-wrapper {
   display: flex;
+  align-items: center;
   margin-top: auto;
   margin-bottom: auto;
 }
