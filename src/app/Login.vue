@@ -93,7 +93,7 @@
 .title {
   font-weight: 700;
   margin-left: 15px;
-  color: #1db954;
+  color: red;
   font-size: 28px !important;
 }
 .separator {
